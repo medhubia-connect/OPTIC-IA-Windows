@@ -1,0 +1,1346 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OPTIC IA · by MedHub</title><style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#17465f;color:#102b46}.hero{min-height:100vh;display:grid;place-items:center;padding:32px;background:url('assets/optic-background.jpg') center/cover fixed no-repeat;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,67,91,.20),rgba(17,61,82,.30));pointer-events:none}.hero-inner{position:relative;z-index:1;width:min(980px,94vw);text-align:center}.logo{width:min(620px,76vw);height:auto;max-height:430px;object-fit:contain;filter:drop-shadow(0 12px 28px rgba(4,28,44,.20));margin-bottom:-18px}.tag{font-size:13px;letter-spacing:.34em;color:#eef9ff;margin:38px 0 42px;text-shadow:0 2px 10px rgba(4,24,38,.42)}.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;max-width:720px;margin:auto}.action{min-height:64px;border:1px solid rgba(69,154,190,.20);background:linear-gradient(145deg,rgba(38,103,145,.94),rgba(19,76,113,.96));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:14px;color:#f7fbff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;padding:10px 13px;font-size:10.5px;font-weight:610;letter-spacing:.065em;box-shadow:inset 0 1px rgba(255,255,255,.10),0 8px 18px rgba(8,43,75,.13);transition:.2s}.action:hover{transform:translateY(-1px);background:linear-gradient(145deg,#3077a3,#1b5b85);border-color:rgba(102,205,225,.52);box-shadow:0 11px 22px rgba(8,43,75,.18)}.ico{width:29px;height:29px;border-radius:50%;border:1px solid rgba(92,193,218,.52);display:grid;place-items:center;font-size:14px;color:#8be6ee;background:rgba(255,255,255,.055)}.hint{margin-top:24px;color:#d3e7f0;font-size:12px;letter-spacing:.06em}.file{display:none}.microscope-panel{display:none;position:fixed;inset:0;z-index:50;background:rgba(4,18,28,.78);backdrop-filter:blur(10px);padding:24px;align-items:center;justify-content:center}.microscope-panel.on{display:flex}.microscope-card{width:min(900px,96vw);background:#edf7fb;border:1px solid rgba(73,166,201,.28);border-radius:24px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.35);color:#14364e}.microscope-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.microscope-head h3{margin:0;font-size:18px}.microscope-close{border:0;background:rgba(20,73,103,.09);color:#174668;border-radius:10px;padding:9px 12px;cursor:pointer}.microscope-video{width:100%;aspect-ratio:4/3;background:#07131b;border-radius:17px;object-fit:contain}.microscope-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.microscope-tools button,.microscope-tools select{border:1px solid rgba(35,108,147,.2);border-radius:11px;padding:10px 13px;background:white;color:#174668}.microscope-tools button{cursor:pointer}.microscope-tools .capture{background:linear-gradient(135deg,#25658f,#1680a5);color:white}.microscope-note{font-size:11px;color:#668296;line-height:1.45;margin:10px 2px 0}.live-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;color:#28647f}.live-dot{width:8px;height:8px;border-radius:50%;background:#9aaab3}.live-badge.on .live-dot{background:#22a66f;box-shadow:0 0 0 5px rgba(34,166,111,.12)}.microscope-stage{position:relative}.microscope-overlay{position:absolute;left:14px;top:14px;background:rgba(4,18,28,.62);color:#fff;border-radius:999px;padding:7px 10px;backdrop-filter:blur(7px);font-size:10px;letter-spacing:.09em}.microscope-tools .analyze-live{background:linear-gradient(135deg,#174f75,#25658f);color:white}.microscope-tools button:disabled{opacity:.45;cursor:not-allowed}
+/* v3.3.1 · visor responsive: siempre dentro del viewport */
+.microscope-panel{padding:clamp(8px,1.8vh,20px);overflow:auto}
+.microscope-card{width:min(900px,94vw);max-height:calc(100dvh - 20px);overflow:auto;border-radius:18px;padding:clamp(10px,1.5vh,16px)}
+.microscope-head{margin-bottom:clamp(6px,1vh,10px)}
+.microscope-stage{width:100%;display:flex;justify-content:center;align-items:center;background:#07131b;border-radius:14px;overflow:hidden}
+.microscope-video{width:auto;max-width:100%;height:auto;max-height:calc(100dvh - 245px);aspect-ratio:4/3;object-fit:contain;border-radius:14px}
+.microscope-tools{margin-top:8px;gap:7px}
+.microscope-tools button,.microscope-tools select{padding:8px 10px}
+.micro-meta{margin-top:8px;gap:7px}
+.microscope-note{margin-top:7px}
+@media (max-height:760px){.microscope-video{max-height:calc(100dvh - 215px)}.microscope-head h3{font-size:15px}.microscope-tools button,.microscope-tools select{padding:7px 9px;font-size:11px}.microscope-note{display:none}}
+@media (max-height:620px){.microscope-video{max-height:calc(100dvh - 180px)}.micro-meta{display:none}.microscope-card{padding:8px}.microscope-tools{margin-top:6px}}
+
+.workspace{display:none;min-height:100vh;background:linear-gradient(rgba(232,246,251,.88),rgba(220,239,247,.91)),url('assets/optic-background.jpg') center/cover fixed no-repeat;padding:22px;position:relative;color:#102b46}.workspace:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 52% 0%,rgba(255,255,255,.75),transparent 42%);pointer-events:none}.workspace.on{display:block}.top,.workgrid{position:relative;z-index:1}.top{display:flex;align-items:center;justify-content:space-between;max-width:1320px;margin:auto;padding:2px 8px 8px}.mini{width:255px;height:112px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(20,70,100,.10))}.top-actions{display:flex;gap:9px;align-items:center}.back{border:1px solid rgba(29,93,132,.20);background:rgba(255,255,255,.72);color:#174668;padding:11px 17px;border-radius:13px;cursor:pointer;box-shadow:0 8px 20px rgba(34,82,110,.06)}.microscope-back{display:none}.microscope-back.on{display:inline-block}.workgrid{max-width:1320px;margin:8px auto 22px;display:grid;grid-template-columns:1.42fr .88fr;gap:18px}.viewer,.chat{border:1px solid rgba(39,113,153,.17);background:rgba(249,253,255,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:24px;min-height:650px;padding:20px;box-shadow:0 18px 48px rgba(27,76,105,.10)}.drop{height:580px;border:1px solid rgba(59,130,167,.20);border-radius:18px;display:flex;align-items:center;justify-content:center;text-align:center;color:#55788f;overflow:hidden;background:rgba(255,255,255,.54)}.drop img{width:100%;height:100%;object-fit:contain}.chat h2{font-size:26px;margin:8px 0 8px;color:#102f4d}.sub{color:#5b778a;margin:0 0 16px;line-height:1.45}.prompt{width:100%;min-height:112px;background:rgba(255,255,255,.78);border:1px solid rgba(38,111,151,.18);border-radius:16px;color:#173a56;padding:14px;resize:vertical;outline:none}.prompt:focus{border-color:#54b9d3;box-shadow:0 0 0 3px rgba(63,181,211,.10)}.primary{margin-top:12px;width:100%;border:1px solid rgba(20,139,183,.18);border-radius:13px;padding:12px;background:linear-gradient(135deg,#25658f,#1680a5);color:white;font-size:12px;font-weight:650;letter-spacing:.025em;cursor:pointer;box-shadow:0 9px 20px rgba(8,43,75,.18)}.response{margin-top:16px;font-size:13px;line-height:1.52;color:#284b64;background:rgba(255,255,255,.62);border:1px solid rgba(47,112,148,.13);border-radius:15px;padding:16px;min-height:70px;white-space:normal}.response:empty{display:none}.response h2,.response h3{color:#10395a;margin:13px 0 6px;line-height:1.25}.response h2{font-size:18px}.response h3{font-size:15px}.response h2:first-child,.response h3:first-child{margin-top:0}.response ul{margin:8px 0 12px;padding-left:22px}.response li{margin:4px 0}.response strong{color:#123b5a}.status{font-size:12px;color:#67879a;margin-top:10px}
+.brand-footer{position:relative;z-index:1;max-width:1320px;margin:0 auto 18px;padding:16px 20px;border:1px solid rgba(39,113,153,.14);background:rgba(249,253,255,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 12px 34px rgba(27,76,105,.07)}.brand-footer .signature{font-size:11px;letter-spacing:.13em;color:#244f6d;text-transform:uppercase}.brand-footer .signature b{font-size:12px;color:#123b5a}.brand-footer .line{width:1px;height:32px;background:rgba(31,105,145,.18)}.brand-footer .dependency{font-size:11px;line-height:1.45;color:#668296;text-align:right}.brand-footer .dependency strong{color:#164b70;font-weight:650}@media(max-width:820px){.brand-footer{flex-direction:column;text-align:center}.brand-footer .line{width:70px;height:1px}.brand-footer .dependency{text-align:center}}
+@media(max-width:820px){.hero{background-attachment:scroll;padding:22px}.logo{width:min(560px,94vw)}.tag{font-size:10px;letter-spacing:.2em;margin-bottom:28px}.actions{grid-template-columns:1fr}.action{min-height:78px}.workspace{background-attachment:scroll;padding:14px}.mini{width:190px;height:88px}.workgrid{grid-template-columns:1fr}.viewer,.chat{min-height:auto}.drop{height:420px}}
+
+/* v2.0 · herramientas microscópicas */
+.micro-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.micro-meta label{font-size:10px;letter-spacing:.08em;color:#5b778a;text-transform:uppercase}.micro-meta select{width:100%;margin-top:5px;border:1px solid rgba(35,108,147,.2);border-radius:11px;padding:9px 11px;background:#fff;color:#174668}.capture-meta{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}.capture-meta.on{display:flex}.meta-pill{font-size:10px;letter-spacing:.06em;border:1px solid rgba(39,113,153,.16);background:rgba(255,255,255,.68);color:#315f7b;border-radius:999px;padding:7px 10px}.quick-tools{display:none;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}.quick-tools.on{display:grid}.quick-tool{border:1px solid rgba(39,113,153,.16);background:rgba(255,255,255,.74);color:#174668;border-radius:11px;padding:9px 10px;font-size:11px;cursor:pointer}.quick-tool:hover{background:#fff}.gallery-wrap{display:none;margin-top:14px}.gallery-wrap.on{display:block}.gallery-title{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#55788f;margin-bottom:8px}.gallery{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.gallery-item{position:relative;flex:0 0 92px;height:72px;border:1px solid rgba(39,113,153,.18);border-radius:11px;overflow:hidden;background:#fff;cursor:pointer;padding:0}.gallery-item img{width:100%;height:100%;object-fit:cover}.gallery-item span{position:absolute;left:5px;bottom:5px;background:rgba(4,18,28,.66);color:#fff;font-size:9px;padding:3px 5px;border-radius:6px}.annotate-bar{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}.annotate-bar.on{display:flex}.annotate-bar button{border:1px solid rgba(39,113,153,.17);background:rgba(255,255,255,.78);color:#174668;border-radius:10px;padding:8px 10px;font-size:10px;cursor:pointer}.annotate-bar button.active{background:#174f75;color:#fff}.drop.annotating{cursor:crosshair;position:relative}.drop .image-stage{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}.drop .image-stage>img{width:100%;height:100%;object-fit:contain}.marker{position:absolute;width:30px;height:30px;border:2px solid #fff;border-radius:50%;background:rgba(15,74,111,.82);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;transform:translate(-50%,-50%);box-shadow:0 0 0 2px rgba(13,83,122,.72),0 5px 14px rgba(0,0,0,.22);pointer-events:none}.marker-note{font-size:10px;color:#668296}.viewer-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}.session-count{font-size:10px;color:#6b8798}@media(max-width:820px){.micro-meta{grid-template-columns:1fr}.quick-tools{grid-template-columns:1fr}}
+
+/* v3.4.2 · Dark-logo header: original eye + high-contrast wordmark */
+.micro-darkbrand342{display:flex;align-items:center;gap:8px;height:48px;flex:0 0 auto}
+.micro-eye342{width:50px;height:40px;object-fit:contain;display:block;filter:none}
+.micro-word342{display:flex;flex-direction:column;justify-content:center;line-height:1;white-space:nowrap}
+.micro-word342>div{font-size:17px;letter-spacing:.12em;font-weight:400}
+.optic342{color:#f4f8fa}.ia342{color:#39c7df}
+.micro-word342 small{margin-top:5px;color:#b8ccd5;font-size:7px;letter-spacing:.18em;font-weight:500}
+@media(max-width:760px){.micro-word342{display:none}.micro-eye342{width:46px}.micro-brand341{gap:9px}.micro-sep341{height:22px}}
+
+/* v3.8 · Professional Analysis Workstation */
+@media(min-width:821px){
+  .workspace{height:100vh;min-height:0;overflow:hidden;display:none;padding:14px 22px 10px}
+  .workspace.on{display:flex;flex-direction:column}
+  .workspace .top{width:100%;flex:0 0 88px;padding:0 8px 5px}
+  .workspace .mini{width:205px;height:82px}
+  .workgrid{width:100%;flex:1;min-height:0;margin:5px auto 8px;grid-template-columns:minmax(0,1.48fr) minmax(360px,.82fr);gap:14px;overflow:hidden}
+  .viewer,.chat{min-height:0;height:100%;box-sizing:border-box}
+  .viewer{display:flex;flex-direction:column;padding:14px;background:rgba(247,252,254,.90)}
+  .drop{height:auto;min-height:0;flex:1;background:#eef4f7;border-color:rgba(35,92,124,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.65)}
+  .drop .image-stage{min-height:0}
+  .drop .image-stage>img{max-width:100%;max-height:100%;object-fit:contain}
+  .annotate-bar,.gallery-wrap,.session-tools37,.counter37{flex:0 0 auto}
+  .chat{padding:0;display:flex;flex-direction:column;overflow:hidden;background:rgba(247,252,254,.94);border-color:rgba(28,83,116,.2)}
+  .analysis-head38{flex:0 0 auto;padding:17px 18px 13px;border-bottom:1px solid rgba(39,113,153,.13);background:rgba(255,255,255,.72)}
+  .analysis-head38 h2{margin:0 0 4px;font-size:20px;letter-spacing:-.015em}
+  .analysis-head38 .sub{margin:0;font-size:11px}
+  .analysis-status38{display:inline-flex;align-items:center;gap:6px;margin-top:9px;font:600 9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:#41687d}
+  .analysis-status38:before{content:"";width:6px;height:6px;border-radius:50%;background:#2b91ad;box-shadow:0 0 0 3px rgba(43,145,173,.10)}
+  .analysis-scroll38{flex:1;min-height:0;overflow-y:auto;padding:14px 16px 22px;scrollbar-width:thin;scrollbar-color:#9cb7c5 transparent}
+  .analysis-scroll38::-webkit-scrollbar{width:7px}.analysis-scroll38::-webkit-scrollbar-thumb{background:#9cb7c5;border-radius:10px}
+  .quick-tools{margin:0 0 10px;grid-template-columns:1fr 1fr;gap:6px}
+  .quick-tool{padding:8px;font-size:9px}
+  .response{margin:0;background:rgba(255,255,255,.82);border-color:rgba(47,112,148,.12);padding:15px;font-size:12.5px;line-height:1.58}
+  .response h2{font-size:16px;border-bottom:1px solid rgba(39,113,153,.12);padding-bottom:6px}.response h3{font-size:13.5px}
+  .analysis-compose38{flex:0 0 auto;padding:11px 14px 13px;border-top:1px solid rgba(39,113,153,.15);background:rgba(238,247,250,.97);box-shadow:0 -10px 25px rgba(20,62,87,.05)}
+  .analysis-compose38 .prompt{min-height:66px;max-height:105px;resize:none;padding:10px 11px;font-size:12px;background:#fff}
+  .analysis-compose38 .primary{margin-top:7px;padding:10px}
+  .brand-footer{display:none!important}
+}
+@media(max-width:820px){.analysis-head38{padding:4px 0 8px}.analysis-scroll38{display:flex;flex-direction:column}.analysis-compose38{margin-top:12px}.analysis-status38{font-size:10px;color:#668296}.analysis-status38:before{content:"●";font-size:8px;margin-right:5px}}
+
+/* v3.8.1 · Drag & Drop de archivos */
+#homeDrop381{position:relative;border:1px solid transparent;border-radius:18px;transition:border-color .18s,background .18s,box-shadow .18s}
+#homeDrop381.drag381{border-color:rgba(121,224,239,.72);background:rgba(9,45,66,.28);box-shadow:inset 0 0 0 1px rgba(121,224,239,.18),0 18px 50px rgba(3,25,39,.18)}
+.drop381-overlay{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;border-radius:18px;background:rgba(7,31,46,.88);backdrop-filter:blur(10px);color:#eefcff;pointer-events:none}
+#homeDrop381.drag381 .drop381-overlay{display:flex}
+.drop381-card{text-align:center;padding:24px 32px;border:1px dashed rgba(139,229,239,.72);border-radius:14px;min-width:min(420px,82%);background:rgba(22,75,101,.42)}
+.drop381-icon{font-size:30px;color:#8be6ee;margin-bottom:8px}.drop381-title{font-size:13px;font-weight:700;letter-spacing:.12em}.drop381-sub{font-size:11px;color:#badbe6;margin-top:7px}
+#drop.drag381{border-color:#54b9d3!important;background:rgba(225,247,251,.92)!important;box-shadow:inset 0 0 0 2px rgba(84,185,211,.14)}
+#drop.drag381:after{content:'SOLTAR IMAGEN PARA ANALIZAR';position:absolute;z-index:50;inset:14px;display:flex;align-items:center;justify-content:center;border:1px dashed rgba(42,139,174,.62);border-radius:8px;background:rgba(236,250,253,.90);color:#174f75;font-size:12px;font-weight:750;letter-spacing:.10em;pointer-events:none}
+
+/* OPTIC IA v4.0 · PROFESSIONAL HOME */
+.pro-kicker40{margin-top:8px;color:#eef9fc;font-size:12px;font-weight:650;letter-spacing:.27em;text-shadow:0 1px 9px rgba(5,34,48,.2)}
+.tag{margin:11px 0 30px!important;font-size:9px!important;letter-spacing:.22em!important;font-weight:540!important;color:rgba(239,250,252,.84)!important}
+.action{justify-content:flex-start!important;text-align:left!important;padding:9px 14px!important;min-height:58px!important;position:relative;overflow:hidden}
+.action:after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:rgba(170,239,247,.85);transition:width .22s ease}.action:hover:after{width:100%}
+.action-copy40{display:flex;flex-direction:column;gap:3px;line-height:1}.action-copy40 b{font-size:10px;letter-spacing:.08em;font-weight:650}.action-copy40 small{font-size:7.5px;letter-spacing:.13em;color:rgba(225,245,249,.68);font-weight:550}
+.hero .hint{display:flex;align-items:center;justify-content:center;gap:7px!important;margin-top:17px!important;font-size:8.5px!important;letter-spacing:.13em!important;color:rgba(231,247,250,.74)!important}
+.ready-dot40{width:6px;height:6px;border-radius:50%;background:#66d69a;box-shadow:0 0 0 3px rgba(102,214,154,.09),0 0 9px rgba(102,214,154,.28)}.hint-sep40{opacity:.4}.version40{margin-top:9px;font-size:7px;letter-spacing:.17em;color:rgba(224,243,247,.45)}
+.instrument-title{font-weight:620;letter-spacing:.16em}.instrument-status span{padding:4px 7px;border:1px solid rgba(224,247,250,.10);border-radius:5px;background:rgba(255,255,255,.025)}
+.instrument-status .led{box-shadow:0 0 7px rgba(91,218,146,.48)}
+@media(max-width:820px){.pro-kicker40{font-size:9px;letter-spacing:.18em}.tag{font-size:7.5px!important;letter-spacing:.12em!important}.action{min-height:55px!important}.hero .hint{flex-wrap:wrap}.version40{margin-bottom:8px}}
+</style><style id="v322-visual">
+/* v3.3 · lighter, quieter, more legible landing screen */
+.hero{min-height:100vh;padding:24px 28px 76px!important;background:#39758b!important;position:relative;overflow:hidden}
+.hero:before{background:radial-gradient(ellipse at 50% 28%,rgba(226,247,250,.62) 0%,rgba(161,211,220,.34) 24%,rgba(69,135,156,.10) 52%,transparent 72%),linear-gradient(180deg,#5b93a5 0%,#39758b 52%,#2b647b 100%)!important}
+.hero:after{content:"";position:absolute;inset:auto -8% 0;height:34%;background:linear-gradient(165deg,transparent 0 38%,rgba(255,255,255,.035) 39% 46%,transparent 47% 100%);pointer-events:none}
+.hero-inner{width:min(900px,94vw)!important;z-index:2}
+.logo{width:min(500px,65vw)!important;max-height:335px!important;margin:0 auto -18px!important;filter:none!important;object-fit:contain;display:block}
+.tag{font-size:11px!important;letter-spacing:.32em!important;color:#f4fbfd!important;margin:24px 0 28px!important;text-shadow:0 1px 8px rgba(16,57,74,.18)!important;font-weight:600!important}
+.actions{grid-template-columns:repeat(3,1fr)!important;max-width:610px!important;gap:10px!important}
+.action{min-height:56px!important;border:1px solid rgba(231,250,253,.34)!important;background:rgba(27,83,106,.42)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px!important;font-size:10px!important;font-weight:620!important;letter-spacing:.055em!important;box-shadow:0 5px 14px rgba(15,55,72,.08)!important;padding:8px 11px!important;gap:8px!important}
+.action:hover{transform:translateY(-1px)!important;background:rgba(25,77,99,.56)!important;border-color:rgba(221,249,253,.68)!important;box-shadow:0 7px 16px rgba(15,55,72,.12)!important}
+.action .ico{width:27px!important;height:27px!important;border-radius:8px!important;border:1px solid rgba(197,242,248,.42)!important;color:#d8f8fb!important;font-size:13px!important;background:rgba(255,255,255,.055)!important}
+.actions .action:nth-child(n+4){display:none!important}
+.hero .hint{color:#e1f0f4!important;font-size:10.5px!important;letter-spacing:.055em!important;margin-top:13px!important}
+#heroAnalyze321{display:flex!important;width:min(300px,55vw)!important;height:44px!important;margin:18px auto 0!important;border-radius:13px!important;border:1px solid rgba(207,248,252,.62)!important;align-items:center!important;justify-content:center!important;gap:9px!important;background:linear-gradient(180deg,rgba(34,159,187,.94),rgba(23,127,157,.96))!important;color:#fff!important;font-size:11px!important;font-weight:700!important;letter-spacing:.07em!important;cursor:pointer!important;box-shadow:0 6px 16px rgba(12,74,96,.16),inset 0 1px rgba(255,255,255,.20)!important}
+#heroAnalyze321:hover{filter:brightness(1.05);transform:translateY(-1px)}
+#heroAnalyze321 .spark{font-size:15px!important;color:#e2fbff!important}
+#heroAnalyze321 span:last-child{font-size:20px!important}
+#heroFooter321{position:absolute;left:0;right:0;bottom:0;height:52px!important;border-top:1px solid rgba(218,246,250,.24)!important;background:rgba(26,76,96,.32)!important;display:flex;align-items:center;justify-content:space-between;padding:0 34px!important;color:#d8ebf0!important;font-size:9px!important;letter-spacing:.085em!important;z-index:3;backdrop-filter:blur(10px)}
+#heroFooter321 b{color:#fff!important;font-weight:600}#heroFooter321 .online{display:flex;align-items:center;gap:7px}#heroFooter321 .dot{width:7px;height:7px;border-radius:50%;background:#69df8e;box-shadow:none}
+@media(max-width:820px){.hero{padding:18px 14px 96px!important}.logo{width:min(470px,90vw)!important;margin-top:8px!important}.tag{font-size:9px!important;letter-spacing:.18em!important;margin:20px 0 22px!important}.actions{grid-template-columns:1fr!important;max-width:330px!important;gap:8px!important}.action{min-height:50px!important}#heroAnalyze321{width:min(300px,82vw)!important;height:44px!important;margin-top:16px!important}#heroFooter321{height:auto!important;min-height:66px!important;padding:9px 16px!important;gap:5px;flex-direction:column;justify-content:center;text-align:center}}
+</style>
+
+<style id="v33-instrument">
+/* v3.3 · Instrument UI: restrained laboratory workstation language */
+.hero{padding-top:76px!important}
+.instrument-top{position:absolute;z-index:4;left:0;right:0;top:0;height:48px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(228,249,252,.22);background:rgba(22,70,89,.26);backdrop-filter:blur(12px);color:#eaf7fa;font-size:9px;letter-spacing:.12em}
+.instrument-title{font-weight:650}.instrument-status{display:flex;gap:18px;align-items:center}.instrument-status span{display:flex;gap:6px;align-items:center}.led{width:6px;height:6px;border-radius:50%;background:#70dfa0;box-shadow:0 0 0 3px rgba(112,223,160,.10)}
+.actions{max-width:570px!important;gap:8px!important}.action{min-height:50px!important;border-radius:8px!important;background:rgba(28,78,99,.34)!important;box-shadow:inset 0 1px rgba(255,255,255,.06)!important}.action .ico{width:24px!important;height:24px!important;border-radius:5px!important;font-size:12px!important}.tag{margin-bottom:24px!important}
+#heroAnalyze321{width:min(250px,50vw)!important;height:40px!important;border-radius:8px!important;background:#167e9c!important;box-shadow:inset 0 1px rgba(255,255,255,.14),0 4px 10px rgba(13,65,82,.10)!important;font-size:10px!important}
+#heroFooter321{font-size:8.5px!important}.microscope-card{width:min(1040px,97vw)!important;border-radius:12px!important;padding:14px!important;background:#dfeaf0!important;border-color:#9fb8c5!important;box-shadow:0 24px 70px rgba(0,0,0,.42)!important}.microscope-head{border-bottom:1px solid #b7cbd5;padding:2px 2px 11px}.microscope-head h3{font-size:14px!important;letter-spacing:.06em;text-transform:uppercase}.microscope-note{font-size:10px!important}.microscope-video{border-radius:5px!important;border:1px solid #738b98}.microscope-overlay{border-radius:4px!important;font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important}.microscope-tools button,.microscope-tools select{border-radius:5px!important;font-size:10px!important;padding:8px 10px!important}.microscope-tools .capture,.microscope-tools .analyze-live{background:#176f8d!important}.live-badge{font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important;font-size:9px!important}.workspace .top{border-bottom:1px solid rgba(39,113,153,.14)}.viewer,.chat{border-radius:12px!important}.drop{border-radius:6px!important}.primary,.prompt,.quick-tool,.back{border-radius:6px!important}
+@media(max-width:820px){.instrument-top{height:auto;min-height:48px;padding:8px 12px;gap:8px}.instrument-status{gap:8px;flex-wrap:wrap;justify-content:flex-end}.instrument-title{max-width:45%}.hero{padding-top:72px!important}.actions{max-width:320px!important}}
+</style>
+
+<style id="v332-visor-fix">
+/* v3.3.2 — un único visor 4:3, sin paneles internos visibles */
+.microscope-stage{position:relative!important;width:min(100%,760px)!important;aspect-ratio:4/3!important;height:auto!important;max-height:calc(100dvh - 270px)!important;margin:0 auto!important;background:#07131b!important;border:1px solid #738b98!important;border-radius:7px!important;overflow:hidden!important;display:block!important}
+.microscope-stage>.microscope-video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;object-fit:contain!important;border:0!important;border-radius:0!important;background:transparent!important;margin:0!important}
+.microscope-stage>video.microscope-video{display:block}
+.microscope-overlay{z-index:5!important}
+@media(max-height:760px){.microscope-stage{width:min(100%,620px)!important;max-height:calc(100dvh - 235px)!important}}
+@media(max-height:620px){.microscope-stage{width:min(100%,520px)!important;max-height:calc(100dvh - 195px)!important}}
+</style>
+
+<style id="workstation34">
+.microscope-panel{padding:14px!important;background:rgba(4,17,27,.82)!important}
+.microscope-card{width:min(1180px,97vw)!important;height:min(700px,calc(100dvh - 28px))!important;max-height:none!important;overflow:hidden!important;padding:0!important;background:#0d2634!important;border:1px solid #335d70!important;border-radius:12px!important;color:#dcecf3!important;display:grid!important;grid-template-rows:54px 1fr 58px!important;box-shadow:0 28px 90px rgba(0,0,0,.52)!important}
+.microscope-head{margin:0!important;padding:0 18px!important;border-bottom:1px solid #294b5c!important;background:#102d3d!important;display:flex!important;align-items:center!important}
+.microscope-head h3{font-size:12px!important;letter-spacing:.11em!important;color:#f0f8fb!important;margin:0!important;white-space:nowrap}.micro-brand341{display:flex;align-items:center;gap:14px;min-width:0}.micro-logo341{width:112px;height:42px;object-fit:contain;display:block;filter:none}.micro-sep341{width:1px;height:26px;background:#31596c;flex:0 0 auto}.micro-title341{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.microscope-head .microscope-note{font-size:9px!important;color:#88aebe!important;margin:3px 0 0!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:720px}
+.microscope-close{width:30px;height:30px;padding:0!important;border:1px solid #31596c!important;background:#17394a!important;color:#cfe2ea!important;font-size:0!important;border-radius:6px!important}.microscope-close:after{content:'×';font-size:18px}
+.microscope-body34{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 218px;gap:12px;padding:12px;background:#0a202c}
+.microscope-stage{width:100%!important;height:100%!important;max-height:none!important;aspect-ratio:auto!important;margin:0!important;border:1px solid #294b5b!important;border-radius:7px!important;background:#050f15!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
+.microscope-stage:after{content:'OPTIC IA  ·  UCMOS  ·  SIN SEÑAL';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:500 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;color:#476575;white-space:nowrap;z-index:0}
+.microscope-stage>.microscope-video{z-index:1!important;object-fit:contain!important;background:transparent!important}
+.microscope-overlay{left:12px!important;top:12px!important;z-index:4!important;background:#102b39!important;border:1px solid #315464!important;padding:6px 8px!important}
+.microscope-side34{border:1px solid #294b5b;border-radius:7px;background:#102b39;padding:13px;display:flex;flex-direction:column;gap:13px;min-width:0}
+.tech-title34{font:600 9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;color:#6f9daf;border-bottom:1px solid #294b5b;padding-bottom:8px}.tech-block34{display:grid;gap:4px}.tech-label34{font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;color:#668fa1}.tech-value34{font-size:11px;color:#e5f1f5}.tech-status34{display:flex;align-items:center;gap:7px}.tech-status34 i{width:7px;height:7px;border-radius:50%;background:#758995}.microscope-side34 select{width:100%;border:1px solid #31596c!important;border-radius:5px!important;background:#0c2230!important;color:#e0edf2!important;padding:8px 9px!important;font-size:10px!important;outline:none}.micro-meta{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;margin:0!important}.micro-meta label{font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.12em!important;color:#668fa1!important}.micro-meta label select{display:block;margin-top:5px}.microscope-tools{margin:0!important;padding:9px 12px!important;border-top:1px solid #294b5b!important;background:#102d3d!important;display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:nowrap!important}.microscope-tools select{max-width:160px!important;background:#0c2230!important;color:#dcecf3!important;border-color:#31596c!important}.microscope-tools button{height:36px!important;padding:0 13px!important;border-radius:5px!important;background:#17394a!important;color:#dcecf3!important;border:1px solid #31596c!important;white-space:nowrap}.microscope-tools .capture{margin-left:auto!important;background:#17607b!important}.microscope-tools .analyze-live{background:#1682a1!important;border-color:#2698b5!important;font-weight:650!important}.microscope-tools button:disabled{opacity:.34!important}.microscope-card>.microscope-note{display:none!important}
+@media(max-width:820px){.microscope-body34{grid-template-columns:1fr}.microscope-side34{display:none}.microscope-tools{overflow-x:auto}.microscope-card{height:calc(100dvh - 16px)!important}.microscope-panel{padding:8px!important}}
+</style>
+<style id="v35-imaging-controls">
+/* v3.5 · Imaging Controls — visual adjustments only; acquisition remains untouched. */
+.microscope-stage{position:relative!important}
+.image-tools35{position:absolute;z-index:12;left:10px;top:54px;width:34px;padding:5px;display:flex;flex-direction:column;gap:5px;background:rgba(10,32,44,.88);border:1px solid #31596c;border-radius:6px;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.image-tools35 button{width:24px;height:24px;padding:0;border:1px solid transparent;border-radius:4px;background:transparent;color:#9fc4d2;font:600 10px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;display:grid;place-items:center}
+.image-tools35 button:hover,.image-tools35 button.active{background:#173f52;border-color:#37677a;color:#effaff}.image-tools35 span{height:1px;background:#294b5b;margin:2px 1px}
+.adjust-pop35{display:none;position:absolute;z-index:13;left:51px;top:185px;width:205px;padding:10px 11px;background:rgba(13,38,52,.96);border:1px solid #37677a;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.3);color:#dcecf3}.adjust-pop35.on{display:block}.adjust-pop35>div{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.adjust-pop35 b{font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;color:#8eb5c4}.adjust-pop35 output{font:600 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#eaf7fb}.adjust-pop35 input{width:100%;accent-color:#25a2c3}
+.microscope-stage>.microscope-video{transform-origin:center center!important;transition:filter .08s linear,transform .12s ease!important;will-change:filter,transform}
+.image-readout35{margin-top:auto;border-top:1px solid #294b5b;padding-top:10px;display:grid;gap:5px}.image-readout35 div{display:flex;justify-content:space-between;gap:8px;font:500 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:#668fa1}.image-readout35 strong{font-weight:600;color:#b8d3dd}
+@media(max-width:820px){.image-tools35{left:7px;top:48px}.adjust-pop35{left:46px}}
+</style>
+
+<style id="v37-session-tools">
+.session-tools37{display:none;gap:7px;flex-wrap:wrap;margin:10px 0 0}.session-tools37.on{display:flex}.session-tools37 button{border:1px solid rgba(39,113,153,.18);background:rgba(255,255,255,.82);color:#174668;border-radius:7px;padding:8px 10px;font-size:10px;cursor:pointer}.session-tools37 button.active{background:#174f75;color:#fff}.counter37{display:none;margin-top:9px;padding:9px;border:1px solid rgba(39,113,153,.15);border-radius:8px;background:rgba(255,255,255,.55);gap:7px;align-items:center;flex-wrap:wrap}.counter37.on{display:flex}.counter37 button{border:1px solid rgba(39,113,153,.16);background:white;color:#174668;border-radius:6px;padding:7px 9px;font-size:10px;cursor:pointer}.counter37 button.active{background:#176f8d;color:white}.counter37 .count{font:600 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#315f7b}.compare37{position:fixed;inset:0;z-index:80;background:rgba(4,18,28,.88);display:none;align-items:center;justify-content:center;padding:20px}.compare37.on{display:flex}.compare-card37{width:min(1200px,96vw);background:#dfeaf0;border:1px solid #9fb8c5;border-radius:12px;padding:12px}.compare-head37{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:11px;letter-spacing:.08em;color:#173a56}.compare-head37 button{border:0;background:#174f75;color:white;border-radius:6px;padding:7px 10px;cursor:pointer}.compare-grid37{display:grid;grid-template-columns:1fr 1fr;gap:10px}.compare-pane37{background:#07131b;border-radius:7px;overflow:hidden;aspect-ratio:4/3;position:relative}.compare-pane37 img{width:100%;height:100%;object-fit:contain}.compare-pane37 span{position:absolute;left:9px;top:9px;background:rgba(4,18,28,.7);color:white;padding:5px 7px;border-radius:5px;font-size:9px}.counter-dot37{position:absolute;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);display:grid;place-items:center;color:white;font-size:8px;font-weight:700;border:1px solid white;background:#176f8d;pointer-events:none}.pointer37{position:absolute;width:24px;height:24px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid #fff;background:#d38b31;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;pointer-events:none}@media(max-width:760px){.compare-grid37{grid-template-columns:1fr}.compare-card37{max-height:94vh;overflow:auto}}
+</style>
+
+<style id="v41-instrument-home">
+/* OPTIC IA v4.1 · Instrument Home — premium scientific landing */
+#home.hero{background:#316f86!important;}
+#home.hero:before{background:radial-gradient(ellipse at 50% 27%,rgba(225,247,250,.58) 0%,rgba(149,204,216,.29) 27%,rgba(48,112,135,.06) 57%,transparent 74%),linear-gradient(180deg,#5a93a5 0%,#37778d 50%,#2d687f 100%)!important;}
+#home.hero:after{height:45%;opacity:.62;background:linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px),linear-gradient(164deg,transparent 0 45%,rgba(255,255,255,.028) 46% 50%,transparent 51% 100%)!important;background-size:42px 42px,42px 42px,auto!important;}
+#home .instrument-top{height:44px;padding:0 30px;background:rgba(24,68,86,.18);border-bottom:1px solid rgba(235,251,253,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+#home .instrument-title{font-size:8px;letter-spacing:.19em;opacity:.84;}
+#home .instrument-status{gap:10px;}
+#home .instrument-status span{font-size:7.5px;letter-spacing:.14em;padding:3px 7px;border-color:rgba(235,251,253,.09);background:rgba(255,255,255,.018);}
+#home .instrument-status .led{width:5px;height:5px;background:#73dda2;box-shadow:0 0 7px rgba(115,221,162,.7);}
+#home .hero-inner{width:min(820px,92vw)!important;padding-top:24px!important;}
+#home .logo{width:min(440px,58vw)!important;max-height:292px!important;margin:0 auto -11px!important;}
+#home .pro-kicker40{font-size:9px;letter-spacing:.32em;margin:0 0 38px;color:rgba(246,253,254,.91);font-weight:600;}
+#home .actions{max-width:600px!important;gap:12px!important;}
+#home .action{min-height:58px!important;justify-content:center!important;text-align:center!important;padding:9px 14px!important;border-radius:9px!important;border:1px solid rgba(231,249,252,.28)!important;background:linear-gradient(180deg,rgba(33,83,103,.27),rgba(25,70,89,.20))!important;box-shadow:inset 0 1px rgba(255,255,255,.055),0 8px 22px rgba(10,50,67,.035)!important;transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease!important;}
+#home .action:after{left:18%;right:18%;width:auto;height:1px;transform:scaleX(0);transform-origin:center;transition:transform .2s ease;background:rgba(182,239,246,.72);}
+#home .action:hover:after{width:auto;transform:scaleX(1);}
+#home .action:hover{transform:translateY(-2px)!important;border-color:rgba(232,251,253,.58)!important;background:linear-gradient(180deg,rgba(41,94,114,.38),rgba(26,75,95,.28))!important;box-shadow:inset 0 1px rgba(255,255,255,.08),0 10px 24px rgba(10,48,64,.09)!important;}
+#home .action .ico{width:28px!important;height:28px!important;border-radius:7px!important;border-color:rgba(208,245,249,.30)!important;background:rgba(255,255,255,.035)!important;color:#e3f9fb!important;}
+#home .action-copy40 b{font-size:9px;letter-spacing:.13em;font-weight:650;}
+#home .hint{margin-top:25px!important;font-size:7.5px!important;letter-spacing:.18em!important;color:rgba(239,250,252,.70)!important;}
+#home .ready-dot40{width:5px;height:5px;background:#71dba0;box-shadow:0 0 8px rgba(113,219,160,.45);}
+#home .version-corner401{right:27px;bottom:18px;font-size:6.5px;opacity:.30;letter-spacing:.20em;}
+#homeDrop381.drag381{border-color:rgba(184,239,246,.58);background:rgba(17,62,80,.22);box-shadow:inset 0 0 0 1px rgba(184,239,246,.12);}
+@media(max-width:820px){#home .hero-inner{padding-top:18px!important}#home .logo{width:min(430px,84vw)!important}#home .pro-kicker40{margin-bottom:25px;font-size:8px;letter-spacing:.22em}#home .actions{max-width:330px!important;gap:8px!important}#home .action{min-height:52px!important}#home .instrument-top{padding:7px 12px}#home .instrument-title{font-size:7px;letter-spacing:.11em}}
+</style>
+
+<style id="v42-imaging-workstation">
+/* OPTIC IA v4.2 · Imaging Workstation — laboratory-grade analysis surface */
+@media(min-width:821px){
+.workspace{padding:0 14px 10px!important;background:linear-gradient(rgba(235,242,245,.95),rgba(226,235,239,.96)),url('assets/optic-background.jpg') center/cover fixed no-repeat!important}
+.workspace .top{flex:0 0 58px!important;max-width:none!important;padding:4px 12px!important;border-bottom:1px solid #c4d0d5!important;background:rgba(242,247,249,.92)!important}
+.workspace .mini{width:138px!important;height:50px!important;object-fit:contain!important}.back{padding:7px 12px!important;border-radius:4px!important;background:#f8fafb!important;border-color:#c7d2d7!important;box-shadow:none!important;font-size:10px!important}
+.workgrid{max-width:none!important;margin:8px 0 0!important;grid-template-columns:minmax(0,1.72fr) minmax(340px,.78fr)!important;gap:8px!important}
+.viewer,.chat{border-radius:4px!important;border:1px solid #aebdc4!important;box-shadow:0 5px 16px rgba(24,45,55,.08)!important}
+.viewer{padding:0!important;background:#152229!important;overflow:hidden!important;position:relative!important}
+.viewer-pro39{order:-5;height:43px!important;margin:0!important;padding:0 9px!important;border:0!important;border-bottom:1px solid #34464e!important;border-radius:0!important;background:#1b2a31!important;color:#d8e2e6!important;box-shadow:none!important}
+.viewer-pro39 .meta39{color:#8298a2!important;font-size:7.5px!important;letter-spacing:.08em!important}.viewer-pro39 .meta39 strong{color:#dce7ea!important}.viewer-pro39 .sep39{background:#40535c!important}.viewer-pro39 button{color:#aabac1!important;border-radius:2px!important}.viewer-pro39 button:hover{background:#293c45!important;border-color:#425963!important;color:#fff!important}.viewer-pro39 button.active{background:#164f62!important;border-color:#28748a!important;color:#eafaff!important}
+.drop{margin:0!important;border:0!important;border-radius:0!important;background:#0d171c!important;box-shadow:inset 0 0 0 1px #26363d!important;position:relative!important}.drop .image-stage{background:#0d171c!important}.drop .image-stage>img{max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+.drop:has(.image-stage):after{content:'ORIGINAL  ·  RGB  ·  OPTIC IMAGE VIEWER';position:absolute;left:10px;bottom:8px;z-index:8;padding:4px 7px;background:rgba(11,22,27,.72);border:1px solid rgba(119,151,164,.25);color:#8ea7b1;font:600 7px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em;pointer-events:none}
+.viewer-adjust39{top:52px!important;right:10px!important;border-radius:3px!important;background:#202f36!important;border-color:#465b64!important;color:#e7eff2!important}.viewer-adjust39 label{color:#9eb0b8!important}.viewer-adjust39 output{color:#eaf2f4!important}
+.annotate-bar,.gallery-wrap,.session-tools37,.counter37{margin:0!important;border-radius:0!important;background:#1a282f!important;color:#aebdc4!important;border-color:#354952!important}.annotate-bar button,.session-tools37 button,.counter37 button{border-radius:2px!important;background:#24363e!important;border-color:#40545d!important;color:#c9d5da!important}
+.chat{background:#f2f5f6!important}.analysis-head38{padding:11px 13px 9px!important;background:#26363e!important;border-bottom:1px solid #41535b!important;color:#eef3f5!important}.analysis-head38:after{display:none!important}.analysis-head38 h2{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.09em!important;text-transform:uppercase!important;color:#edf4f6!important}.analysis-head38 h2:after{content:'  /  OPTIC ANALYSIS';color:#819ba6;font-weight:500}.analysis-head38 .sub{font-size:9px!important;color:#9fb0b7!important;margin-top:3px!important}.analysis-status38{margin-top:6px!important;font-size:8px!important;color:#8fd1df!important}
+.analysis-scroll38{padding:10px 11px 16px!important;background:#f5f7f8!important}.quick-tools{display:grid!important;grid-template-columns:1fr 1fr!important;gap:5px!important;margin:0 0 9px!important}.quick-tool{padding:8px 7px!important;border-radius:2px!important;border:1px solid #c7d2d7!important;background:#fff!important;color:#40545d!important;font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.035em!important;text-transform:uppercase!important}.quick-tool:hover{border-color:#6f9eae!important;background:#edf5f7!important;color:#195f75!important}
+.response{border-radius:2px!important;border-color:#d0dade!important;background:#fff!important;color:#344a54!important;box-shadow:none!important}.response:empty{display:block!important;min-height:0!important;padding:0!important;border:0!important;background:transparent!important}
+.analysis-compose38{padding:9px 10px 10px!important;background:#e9eef0!important;border-top:1px solid #c4d0d5!important;box-shadow:none!important}.analysis-compose38 .prompt{min-height:58px!important;border-radius:2px!important;border-color:#bdcbd1!important;font-size:11px!important}.analysis-compose38 .primary{height:34px!important;margin-top:6px!important;border-radius:2px!important;background:#1e7189!important;border-color:#1e7189!important;box-shadow:none!important;font-size:10px!important;text-transform:uppercase!important;letter-spacing:.06em!important}
+}
+</style>
+
+<style id="v431-monochrome-console">
+/* v4.3.1 — one coherent neutral graphite palette; a single OPTIC cyan accent */
+@media(min-width:821px){
+.workspace{background:#e7eaec!important}
+.workspace .top{background:#f1f3f4!important;border-color:#cbd2d6!important}
+.back{background:#f7f8f8!important;border-color:#c8d0d4!important;color:#344047!important}
+.viewer,.chat{border-color:#87949a!important;box-shadow:0 3px 12px rgba(18,27,31,.10)!important}
+.viewer{background:#182126!important}
+.viewer-pro39{background:#202a2f!important;border-bottom-color:#3b474d!important;color:#e6eaec!important}
+.viewer-pro39 .meta39{color:#aeb8bd!important}.viewer-pro39 .meta39 strong{color:#f2f4f5!important}.viewer-pro39 .sep39{background:#465158!important}
+.viewer-pro39 button{color:#b8c1c5!important}.viewer-pro39 button:hover{background:#2c373c!important;color:#fff!important}.viewer-pro39 button.active{background:#303b40!important;border-color:#65757c!important;color:#fff!important}
+.drop,.drop .image-stage{background:#182126!important}.drop .image-stage:after{background:rgba(25,34,39,.88)!important;border-color:#4a565c!important;color:#b3bdc1!important}
+.chat{background:#20292e!important}
+.analysis-head38{background:#20292e!important;border-bottom-color:#3f4a50!important}.analysis-head38 h2{color:#f1f3f4!important}.analysis-head38 .sub{color:#98a4a9!important}.analysis-status38{color:#d7dee1!important}.analysis-status38:before{background:#35a7bd!important;box-shadow:none!important}
+.analysis-scroll38{background:#242e33!important;color:#d9dfe2!important;scrollbar-color:#59666c #242e33!important}
+.analysis-scroll38:has(.response:empty):before{display:none!important}.analysis-scroll38:has(.response:empty):after{content:'SELECCIONÁ UN MODO DE ANÁLISIS';margin:28px 0 18px!important;color:#929ea3!important;font-size:7.5px!important}
+.quick-tools{gap:7px!important}.quick-tool{background:#2b353a!important;border-color:#4a565c!important;color:#d5dbde!important}.quick-tool:hover{background:#343f44!important;border-color:#66747a!important;color:#fff!important}
+.response{background:#293338!important;border-color:#4a565c!important;color:#e0e5e7!important}.response h2,.response h3{color:#f4f6f7!important;border-bottom-color:#465258!important}.response strong{color:#fff!important}
+.analysis-compose38{background:#20292e!important;border-top-color:#3f4a50!important}.analysis-compose38 .prompt{background:#2a3439!important;border-color:#505d63!important;color:#f0f3f4!important}.analysis-compose38 .prompt::placeholder{color:#9ba6ab!important}.analysis-compose38 .prompt:focus{border-color:#35a7bd!important;box-shadow:inset 2px 0 0 #35a7bd!important}
+.analysis-compose38 .primary{background:#303b40!important;border-color:#66747a!important;color:#f7f9f9!important}.analysis-compose38 .primary:hover{background:#39454a!important;border-color:#35a7bd!important}
+.viewer-adjust39{background:#293338!important;border-color:#4a565c!important;color:#eef1f2!important}.viewer-adjust39 label,.viewer-adjust39 output{color:#c4ccd0!important}
+}
+</style>
+
+<style id="v432-unified-workstation">
+/* v4.3.2 — ONE CHASSIS: viewer + console + app bar share one graphite surface */
+@media(min-width:821px){
+html,body{background:#111a1f!important}
+.workspace{background:#111a1f!important;padding:0 10px 10px!important;gap:0!important}
+.workspace .top{height:50px!important;min-height:50px!important;flex-basis:50px!important;background:#111a1f!important;border:0!important;border-bottom:1px solid #344047!important;padding:3px 10px!important}
+.workspace .mini{width:104px!important;height:42px!important;filter:brightness(1.15) contrast(.96)!important}
+.top-actions{gap:6px!important}.back{background:#182228!important;border:1px solid #3b474d!important;color:#cbd3d7!important;border-radius:2px!important;box-shadow:none!important}.back:hover{background:#202c32!important;border-color:#58666c!important;color:#fff!important}
+.workgrid{margin:0!important;max-width:none!important;gap:1px!important;background:#344047!important;grid-template-columns:minmax(0,1.72fr) minmax(360px,.78fr)!important;border:1px solid #344047!important;border-top:0!important;box-shadow:none!important}
+.viewer,.chat{border:0!important;border-radius:0!important;box-shadow:none!important;background:#111a1f!important;min-width:0!important}
+.viewer{padding:0!important}.chat{display:flex!important;flex-direction:column!important}
+.viewer-pro39{height:40px!important;margin:0!important;border:0!important;border-bottom:1px solid #344047!important;border-radius:0!important;background:#151f24!important;color:#dce2e5!important;box-shadow:none!important}
+.viewer-pro39 .meta39{color:#8e9ba1!important}.viewer-pro39 .meta39 strong{color:#e5eaec!important}.viewer-pro39 .sep39{background:#3b474d!important}.viewer-pro39 button{color:#aeb9be!important}.viewer-pro39 button:hover{background:#202b30!important;color:#fff!important}.viewer-pro39 button.active{background:#27343a!important;border-color:#65737a!important;color:#fff!important}
+.drop,.drop .image-stage{margin:0!important;border:0!important;border-radius:0!important;background:#111a1f!important;box-shadow:none!important}.drop .image-stage{display:flex!important;align-items:center!important;justify-content:center!important}.drop .image-stage>img{display:block!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+.drop .image-stage:after{background:rgba(17,26,31,.88)!important;border:1px solid #3b474d!important;color:#9ba7ac!important;border-radius:1px!important}
+.analysis-head38{padding:10px 13px 9px!important;background:#151f24!important;border:0!important;border-bottom:1px solid #344047!important;color:#e5eaec!important}.analysis-head38 h2{color:#eef1f2!important}.analysis-head38 .sub{color:#7f8d93!important}.analysis-status38{color:#aeb9be!important}.analysis-status38:before{background:#35a7bd!important;box-shadow:none!important}
+.analysis-scroll38{background:#111a1f!important;color:#d1d8db!important;padding:12px!important;scrollbar-color:#465158 #111a1f!important}.analysis-scroll38:has(.response:empty):after{content:'SELECT AN ANALYSIS MODE';display:block;text-align:center;margin:28px 0 18px;color:#6f7d83!important;font:600 7px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em}.analysis-scroll38:has(.response:empty):before{display:none!important}
+.quick-tools{gap:1px!important;margin:0!important;background:#344047!important;border:1px solid #344047!important}.quick-tool{min-height:39px!important;border:0!important;border-radius:0!important;background:#182228!important;color:#aeb9be!important;box-shadow:none!important}.quick-tool:hover{background:#202c32!important;color:#fff!important}.quick-tool:focus{outline:1px solid #35a7bd!important;outline-offset:-1px!important}
+.response{margin-top:10px!important;border:1px solid #344047!important;border-radius:0!important;background:#151f24!important;color:#d2d9dc!important;box-shadow:none!important}.response h2,.response h3{color:#eef1f2!important;border-bottom-color:#344047!important}.response strong{color:#fff!important}
+.analysis-compose38{grid-template-columns:minmax(0,1fr) 92px!important;gap:1px!important;padding:0!important;background:#344047!important;border:0!important;border-top:1px solid #344047!important;box-shadow:none!important}.analysis-compose38 .prompt{min-height:48px!important;max-height:78px!important;margin:0!important;border:0!important;border-radius:0!important;background:#151f24!important;color:#e2e7e9!important;box-shadow:none!important}.analysis-compose38 .prompt::placeholder{color:#718087!important}.analysis-compose38 .prompt:focus{outline:none!important;box-shadow:inset 2px 0 0 #35a7bd!important;background:#182329!important}.analysis-compose38 .primary{margin:0!important;border:0!important;border-radius:0!important;background:#1c292f!important;color:#eef2f3!important;box-shadow:none!important}.analysis-compose38 .primary:hover{background:#24343b!important;color:#fff!important}.analysis-compose38 .primary:focus{outline:1px solid #35a7bd!important;outline-offset:-1px!important}
+.viewer-adjust39{background:#182228!important;border:1px solid #3b474d!important;border-radius:0!important;color:#e1e6e8!important;box-shadow:none!important}.viewer-adjust39 label,.viewer-adjust39 output{color:#b3bdc1!important}
+.annotate-bar,.gallery-wrap,.session-tools37,.counter37{background:#151f24!important;border-color:#344047!important;border-radius:0!important;color:#aab5ba!important}.annotate-bar button,.session-tools37 button,.counter37 button{background:#1b272d!important;border-color:#3b474d!important;border-radius:1px!important;color:#c5cdd1!important}
+.brand-footer{display:none!important}
+}
+</style>
+
+
+<style id="v433-unified-dark-workstation">
+/* v4.3.3 — one chassis, one palette. No light header / no visual cuts. */
+@media(min-width:821px){
+html,body{background:#0f191e!important}
+.workspace,.workspace.on{background:#111c22!important;color:#d5e0e4!important;padding:0 12px 10px!important}
+.workspace:before{display:none!important}
+.workspace .top{height:56px!important;min-height:56px!important;flex-basis:56px!important;max-width:none!important;margin:0!important;padding:4px 12px!important;background:#152229!important;border:0!important;border-bottom:1px solid #2d3d45!important}
+.workspace .mini{width:126px!important;height:48px!important;object-fit:contain!important;filter:none!important;opacity:.98!important}
+.top-actions{gap:6px!important}.back{background:#18272e!important;border:1px solid #34464e!important;color:#b9c8ce!important;border-radius:2px!important;box-shadow:none!important;padding:8px 13px!important}.back:hover{background:#20323a!important;color:#eef6f8!important;border-color:#48616b!important}
+.workgrid{max-width:none!important;margin:0!important;gap:1px!important;background:#2e4048!important;grid-template-columns:minmax(0,1.72fr) minmax(360px,.78fr)!important}
+.viewer,.chat{min-height:650px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#111c22!important}
+.viewer{padding:0!important}.chat{display:flex!important;flex-direction:column!important}
+.viewer-pro39{height:40px!important;margin:0!important;background:#17242a!important;border:0!important;border-bottom:1px solid #2d3e46!important;color:#cbd7db!important;box-shadow:none!important}.viewer-pro39 .meta39{color:#82959e!important}.viewer-pro39 .meta39 strong{color:#dce6e9!important}.viewer-pro39 .sep39{background:#34464e!important}.viewer-pro39 button{background:transparent!important;color:#91a5ae!important;border-color:transparent!important}.viewer-pro39 button:hover{background:#203139!important;color:#edf5f7!important}.viewer-pro39 button.active{background:#1b3944!important;border-color:#315865!important;color:#bfeaf3!important}
+.drop,.drop .image-stage{margin:0!important;border:0!important;border-radius:0!important;background:#0d171b!important;box-shadow:none!important}.drop{border-bottom:1px solid #2d3e46!important}.drop .image-stage:after{border-color:#33464e!important;background:rgba(15,25,30,.86)!important;color:#82969f!important}
+.analysis-head38{padding:11px 13px 10px!important;background:#17242a!important;border:0!important;border-bottom:1px solid #2d3e46!important;color:#e5edf0!important}.analysis-head38:after{display:none!important}.analysis-head38 h2{color:#edf4f6!important}.analysis-head38 .sub{color:#7f939c!important}.analysis-status38{color:#8bc6d2!important}.analysis-status38:before{background:#55aebe!important;box-shadow:0 0 5px rgba(85,174,190,.35)!important}
+.analysis-scroll38{background:#111c22!important;color:#c8d4d8!important;padding:12px!important;scrollbar-color:#3d515a #111c22!important}.analysis-scroll38:has(.response:empty):before{display:none!important}.analysis-scroll38:has(.response:empty):after{color:#5f747d!important;margin-top:26px!important}
+.quick-tools{gap:5px!important}.quick-tool{background:#18262d!important;border:1px solid #31434b!important;color:#9fb0b7!important;border-radius:1px!important;box-shadow:none!important}.quick-tool:hover{background:#20333b!important;border-color:#46616c!important;color:#dce8ec!important}
+.response{background:#152228!important;border:1px solid #30424a!important;color:#cbd7db!important;border-radius:1px!important;box-shadow:none!important}.response h2,.response h3,.response strong{color:#edf4f6!important}
+.analysis-compose38{background:#17242a!important;border:0!important;border-top:1px solid #2d3e46!important;box-shadow:none!important}.analysis-compose38 .prompt{background:#101a1f!important;border:1px solid #34474f!important;color:#d7e2e6!important;border-radius:1px!important;box-shadow:none!important}.analysis-compose38 .prompt::placeholder{color:#657982!important}.analysis-compose38 .prompt:focus{border-color:#4d7b89!important;box-shadow:inset 2px 0 0 #4d8d9d!important}.analysis-compose38 .primary{background:#1d5667!important;border:1px solid #356c7b!important;color:#edf8fa!important;border-radius:1px!important;box-shadow:none!important}.analysis-compose38 .primary:hover{background:#246879!important}
+.viewer-adjust39,.annotate-bar,.gallery-wrap,.session-tools37,.counter37{background:#17242a!important;border-color:#30424a!important;color:#aebdc4!important;border-radius:0!important;box-shadow:none!important}.annotate-bar button,.session-tools37 button,.counter37 button{background:#1b2b32!important;border-color:#34474f!important;color:#b9c7cc!important;border-radius:1px!important}
+.brand-footer{background:#111c22!important;border-top:1px solid #2d3e46!important;color:#758a93!important;box-shadow:none!important}.brand-footer .line{background:#2d3e46!important}.brand-footer b,.brand-footer strong{color:#9fb0b7!important}
+}
+@media(max-width:820px){.workspace,.workspace.on{background:#111c22!important}.workspace:before{display:none!important}.workspace .top{background:#152229!important;border-bottom:1px solid #2d3d45!important}.workspace .mini{content:url('assets/optic-logo-dark-original.png');filter:none!important}.back{background:#18272e!important;border-color:#34464e!important;color:#c3d0d5!important}.viewer,.chat{background:#111c22!important}.analysis-scroll38{background:#111c22!important}.analysis-compose38{background:#17242a!important}}
+</style>
+
+
+<style id="v436-clean-top-pro-footer">
+/* v4.3.6 — definitive home cleanup */
+html,body{margin:0!important;padding:0!important;}
+#home.hero{margin:0!important;top:0!important;min-height:100vh!important;overflow:hidden!important;}
+#home .instrument-top{top:0!important;left:0!important;right:0!important;margin:0!important;background:rgba(49,111,134,.18)!important;border-top:0!important;border-bottom:1px solid rgba(235,251,253,.11)!important;box-shadow:none!important;}
+#home .home-copyright435{left:50%!important;right:auto!important;bottom:5px!important;transform:translateX(-50%)!important;width:min(1040px,92vw)!important;margin:0!important;text-align:center!important;color:rgba(239,250,252,.58)!important;font-size:7px!important;line-height:1.25!important;letter-spacing:.12em!important;white-space:nowrap!important;}
+#home .version-corner401{right:24px!important;bottom:23px!important;font-size:6.5px!important;opacity:.34!important;}
+@media(max-width:820px){#home.hero{padding-bottom:82px!important}#home .home-copyright435{bottom:6px!important;width:92vw!important;white-space:normal!important;font-size:6.5px!important;line-height:1.35!important}#home .version-corner401{right:12px!important;bottom:38px!important}}
+</style>
+<style id="v44-medical-imaging-css">
+.modality-modal44{display:none;position:fixed;inset:0;z-index:120;background:rgba(5,17,23,.78);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:22px}.modality-modal44.on{display:flex}.modality-card44{width:min(720px,94vw);background:#111f25;border:1px solid #31444d;box-shadow:0 30px 90px rgba(0,0,0,.45);color:#dbe5e9}.modality-head44{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #2b3b43}.modality-head44 span{display:block;font-size:12px;font-weight:750;letter-spacing:.16em}.modality-head44 small{display:block;margin-top:5px;font-size:8px;letter-spacing:.18em;color:#7f949d}.modality-head44 button{border:0;background:transparent;color:#9db0b8;font-size:25px;cursor:pointer}.modality-body44{padding:22px}.modality-body44>p{margin:0 0 18px;color:#9eafb6;font-size:12px;line-height:1.55}.modality-grid44{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.modality-grid44 button{min-height:82px;background:#17262d;border:1px solid #33464f;color:#dce6ea;cursor:pointer;text-align:left;padding:14px;transition:.16s}.modality-grid44 button:hover{background:#1b2d35;border-color:#52666f;transform:translateY(-1px)}.modality-grid44 b{display:block;font-size:10px;letter-spacing:.11em}.modality-grid44 small{display:block;margin-top:7px;color:#7f949d;font-size:9px;letter-spacing:.04em}.modality-note44{margin-top:17px;padding-top:14px;border-top:1px solid #293a42;color:#728790;font-size:9px;line-height:1.5;letter-spacing:.03em}.imaging-context44{display:none;align-items:center;justify-content:space-between;border-bottom:1px solid #2a3a42;padding:9px 13px;background:#132128}.imaging-context44.on{display:flex}.imaging-context44 span{display:block;font-size:7px;letter-spacing:.17em;color:#71858e}.imaging-context44 strong{display:block;margin-top:3px;font-size:10px;letter-spacing:.1em;color:#d5e1e5}.imaging-context44 button{border:1px solid #354850;background:#182830;color:#91a4ac;font-size:7px;letter-spacing:.12em;padding:6px 8px;cursor:pointer}.imaging-tools44{display:none;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 12px;border-bottom:1px solid #293941;background:#101d23}.imaging-tools44.on{display:grid}.imaging-tools44 button{border:1px solid #30434c;background:#17262d;color:#aebdc3;min-height:35px;padding:6px;font-size:7.5px;letter-spacing:.08em;cursor:pointer}.imaging-tools44 button:hover{background:#1c2d35;color:#e0e8eb}.medical-mode44 .quick-tools{display:none!important}@media(max-width:760px){.modality-grid44{grid-template-columns:1fr 1fr}.imaging-tools44{grid-template-columns:1fr 1fr}}
+</style>
+<style id="v456-home-navigation-fix">
+/* v4.5.8 — Home is always the real landing screen; Drop overlay only during an active drag */
+#homeDrop381:not(.drag381) .drop381-overlay{display:none!important;}
+</style>
+
+<style id="v463-console-author">
+.console-author463{margin-top:10px;padding:10px 0 0 10px;border-top:1px solid rgba(122,156,169,.18);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;gap:4px;color:#7f959e;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.console-author463 strong{display:block;color:#d4e5ea;font-size:9px;font-weight:750;letter-spacing:.13em;text-shadow:0 0 10px rgba(71,202,226,.12)}.console-author463 span{display:block;color:#8ea5ae;font-size:7.3px;font-weight:650;letter-spacing:.15em}.console-author463 small{display:none}@media(max-width:760px){.console-author463{padding-left:4px}.console-author463 strong{font-size:8.3px}.console-author463 span{font-size:6.9px}}
+</style>
+
+<style id="optic-v4891-safe-pro-home">
+/* SAFE visual-only enhancement. No application JavaScript is modified. */
+#homeView, .home-view, .home-screen, #homeScreen{
+  background:
+    radial-gradient(circle at 50% 8%,rgba(110,157,176,.09),transparent 35%),
+    linear-gradient(180deg,#142129 0%,#0d171d 62%,#091116 100%) !important;
+}
+#homeView .home-card, #homeView .mode-card,
+.home-view .home-card, .home-view .mode-card,
+.home-screen .home-card, .home-screen .mode-card{
+  border:1px solid rgba(153,188,204,.18)!important;
+  background:linear-gradient(180deg,rgba(27,43,52,.93),rgba(16,27,34,.95))!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.20)!important;
+  border-radius:16px!important;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease!important;
+}
+#homeView .home-card:hover, #homeView .mode-card:hover,
+.home-view .home-card:hover, .home-view .mode-card:hover,
+.home-screen .home-card:hover, .home-screen .mode-card:hover{
+  transform:translateY(-2px)!important;
+  border-color:rgba(143,196,215,.42)!important;
+  background:linear-gradient(180deg,rgba(31,49,59,.96),rgba(18,31,38,.96))!important;
+}
+#homeView button,.home-view button,.home-screen button{letter-spacing:.075em}
+</style>
+
+
+<style id="optic-v4897-safe-hide-selection-registry">
+/* UI-only change: remove the floating selection registry from layout.
+   No JavaScript, no observers, no changes to image loading or annotation state. */
+#selectionPanel470{
+  display:none!important;
+  visibility:hidden!important;
+  position:absolute!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+</style>
+
+
+<style id="optic-v4898-fixed-viewer-layout">
+/* Tool state must never consume space inside the image viewer.
+   The active toolbar button is the only visual state indicator. */
+#selectionState459,
+#ftStatus458{
+  display:none!important;
+  visibility:hidden!important;
+  position:absolute!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Keep the already-disabled floating selection registry out of layout. */
+#selectionPanel470{
+  display:none!important;
+  visibility:hidden!important;
+  position:absolute!important;
+  width:0!important;
+  height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  pointer-events:none!important;
+}
+</style>
+
+</head><body>
+<div id="opticIntro" class="optic-intro" aria-hidden="true">
+  <div class="optic-intro-glow"></div>
+  <div class="optic-intro-stage optic487-stage">
+    <div class="optic487-brand" aria-label="OPTIC IA"><span>OPTIC</span><span class="optic487-ia">IA</span></div>
+    <div class="optic487-medhub"><i></i><span>by MEDHUB</span><i></i></div>
+    <div class="optic487-author">DR. MARCELO MARTÍN CIANCI</div>
+    <div class="optic487-tagline">MEDICAL IMAGING &amp; MICROSCOPY WORKSTATION</div>
+  </div>
+</div>
+<!-- OPTIC IA v4.3.2 Unified Workstation -->
+<style id="v343-brand-fix">
+/* v3.4.3 · Original logo artwork, dark-background adaptation. No HTML typography reconstruction. */
+.micro-darkbrand343{display:flex;align-items:center;justify-content:center;width:122px;height:62px;flex:0 0 122px;overflow:visible}
+.micro-logo343{display:block;width:116px;height:58px;object-fit:contain;object-position:center;filter:none}
+.microscope-head{min-height:68px!important;padding-top:6px!important;padding-bottom:6px!important;overflow:visible!important}
+.micro-brand341{overflow:visible!important}
+.micro-sep341{height:34px!important}
+@media(max-width:760px){.micro-darkbrand343{width:92px;flex-basis:92px;height:54px}.micro-logo343{width:88px;height:50px}.micro-sep341{height:28px!important}}
+</style>
+<section class="hero" id="home"><div class="instrument-top"><div class="instrument-title">OPTIC IA&nbsp;&nbsp;|&nbsp;&nbsp;SISTEMA DE MICROSCOPÍA Y ANÁLISIS</div><div class="instrument-status"><span><i class="led"></i>BRIDGE</span><span><i class="led"></i>UCMOS</span><span><i class="led"></i>IA</span></div></div><div class="hero-inner" id="homeDrop381"><div class="drop381-overlay"><div class="drop381-card"><div class="drop381-icon">⇩</div><div class="drop381-title">SOLTAR IMAGEN EN OPTIC IA</div><div class="drop381-sub">JPG · JPEG · PNG · WEBP · BMP</div></div></div><img class="logo" src="assets/optic-logo-transparent.png" alt="OPTIC IA"><div class="pro-kicker40">IMAGING &amp; MICROSCOPY WORKSTATION</div><div class="actions"><button class="action" id="upload"><span class="ico">▧</span><span class="action-copy40"><b>ARCHIVO</b></span></button><button class="action" id="camera"><span class="ico">◉</span><span class="action-copy40"><b>CÁMARA</b></span></button><button class="action" id="microscope"><span class="ico">⌾</span><span class="action-copy40"><b>MICROSCOPIO</b></span></button><button class="action" id="analyze"><span class="ico">⌕</span>ANALIZAR</button></div><div class="hint"><span class="ready-dot40"></span>SISTEMA LISTO</div><div class="version40 version-corner401">v4.8.9.25</div><div class="home-copyright435">© 2026 DR. MARCELO MARTÍN CIANCI · OPTIC IA by MEDHUB · TODOS LOS DERECHOS RESERVADOS</div><input id="file" class="file" type="file" accept="image/*"></div></section>
+<div class="modality-modal44" id="modalityModal44" aria-hidden="true"><div class="modality-card44"><div class="modality-head44"><div><span>OPTIC · MEDICAL IMAGING</span><small>CLASIFICACIÓN DEL ESTUDIO</small></div><button id="modalityClose44" title="Cerrar">×</button></div><div class="modality-body44"><p>Seleccioná el tipo de imagen para adaptar las herramientas y el análisis. Si no estás seguro, usá <b>AUTO</b>.</p><div class="modality-grid44"><button data-modality="auto"><b>AUTO</b><small>Asistencia contextual</small></button><button data-modality="microscopy"><b>MICROSCOPÍA</b><small>Histología · Citología</small></button><button data-modality="xray"><b>RADIOGRAFÍA</b><small>RX</small></button><button data-modality="ct"><b>TOMOGRAFÍA</b><small>TC · CT</small></button><button data-modality="mri"><b>RESONANCIA</b><small>RM · MRI</small></button><button data-modality="us"><b>ECOGRAFÍA</b><small>US · Ultrasound</small></button></div><div class="modality-note44">OPTIC IA ofrece asistencia educativa para interpretación de imágenes. No sustituye el informe de un especialista ni una decisión clínica.</div></div></div></div><div class="microscope-panel" id="microscopePanel"><div class="microscope-card"><div class="microscope-head"><div class="micro-brand341"><div class="micro-darkbrand343"><img class="micro-logo343" src="assets/optic-logo-dark-original.png" alt="OPTIC IA by MEDHUB"></div><span class="micro-sep341"></span><div class="micro-title341"><h3>MICROSCOPÍA · LIVE ACQUISITION</h3><div class="microscope-note" id="microscopeStatus">Conectá la ToupCam y seleccioná la cámara.</div></div></div><button class="microscope-close" id="microscopeClose">Cerrar</button></div><div class="microscope-body34"><div class="microscope-stage"><div class="image-tools35" id="imageTools35" aria-label="Ajustes de imagen">
+<button data-action="zoomIn" title="Acercar">＋</button><button data-action="zoomOut" title="Alejar">−</button><button data-action="oneToOne" title="Vista 1:1">1:1</button><button data-action="fit" title="Ajustar al visor">⌗</button><span></span>
+<button data-control="brightness" title="Brillo">☀</button><button data-control="contrast" title="Contraste">◐</button><button data-control="gamma" title="Gamma">γ</button><button data-control="saturate" title="Saturación">◇</button><button data-control="sharpness" title="Nitidez">✦</button><span></span>
+<button data-action="rotate" title="Rotar 90°">↻</button><button data-action="reset" title="Restablecer">R</button><button data-action="original" id="original35" title="Mantener presionado para ver original">O</button><span></span>
+<button data-science="annotate" title="Anotación / punto">A</button><button data-science="measure" title="Medir distancia">↔</button><button data-science="roi" title="Seleccionar región para IA">ROI</button><button data-science="scale" title="Mostrar / ocultar barra de escala">μm</button><button data-science="clear" title="Limpiar mediciones y anotaciones">×</button>
+</div><div class="adjust-pop35" id="adjustPop35"><div><b id="adjustName35">BRILLO</b><output id="adjustValue35">100</output></div><input id="adjustRange35" type="range"></div><canvas id="scienceOverlay36" aria-label="Capa de medición y anotaciones"></canvas><div id="scienceHint36">IMAGEN · SIN HERRAMIENTA</div><video id="microscopeVideo" class="microscope-video" autoplay playsinline muted></video><img id="touptekLive" class="microscope-video" alt="Vista en vivo ToupTek" style="display:none"><img id="frozenFrame" class="microscope-video" alt="Captura congelada" style="display:none"><div class="microscope-overlay"><span class="live-badge" id="liveBadge"><span class="live-dot"></span><span id="liveText">DESCONECTADA</span></span></div></div><aside class="microscope-side34"><div class="tech-title34">SISTEMA / ADQUISICIÓN</div><div class="tech-block34"><span class="tech-label34">FUENTE</span><span class="tech-value34">UCMOS / USB</span></div><div class="tech-block34"><span class="tech-label34">ESTADO</span><span class="tech-value34 tech-status34"><i></i><span id="sideStatus34">SIN SEÑAL</span></span></div><div class="tech-block34"><span class="tech-label34">RESOLUCIÓN</span><span class="tech-value34" id="sideResolution34">—</span></div><div class="image-readout35"><div><span>IMAGEN</span><strong id="imageState35">NEUTRA</strong></div><div><span>ZOOM</span><strong id="zoomState35">100%</strong></div><div><span>ROTACIÓN</span><strong id="rotateState35">0°</strong></div></div><div class="science-panel36"><div class="tech-label34">CALIBRACIÓN</div><label><input id="umPerPx36" type="number" min="0" step="0.0001" placeholder="μm / px"><span>μm/px</span></label><small id="calStatus36">Sin calibrar · mediciones en px</small><button id="analyzeRoi36" disabled>ANALIZAR ROI CON IA</button></div><div class="micro-meta"><label>OBJETIVO<select id="objective"><option value="">Sin especificar</option><option>4×</option><option>10×</option><option>20×</option><option>40×</option><option>60×</option><option>100×</option></select></label><label>TINCIÓN<select id="stain"><option value="">Sin especificar</option><option>H&amp;E</option><option>PAS</option><option>Tricrómico</option><option>Giemsa</option><option>Gram</option><option>Otra / no identificada</option></select></label></div></aside></div><canvas id="microscopeCanvas" hidden></canvas><div class="microscope-tools"><select id="cameraSelect"><option value="">Detectar cámaras…</option></select><button id="microscopeConnect">Conectar cámara</button><button id="touptekConnect">Conectar UCMOS</button><button class="capture" id="microscopeCapture" disabled>📷 Congelar captura</button><button id="returnLive" disabled>↻ Volver a vivo</button><button class="analyze-live" id="microscopeAnalyze" disabled>✦ Capturar y analizar</button></div><div class="microscope-note">UCMOS · conexión exclusiva mediante OPTIC Bridge + ToupCamSDK. La cámara integrada del Mac no se utiliza. Podés congelar, volver al vivo o capturar y analizar.</div></div></div>
+<section class="workspace" id="workspace"><div class="top"><img class="mini" src="assets/optic-logo-dark-header.png"><div class="top-actions"><button class="back microscope-back" id="backMicroscope">← Microscopio</button><button class="back" id="changeImage455">↻ Cambiar imagen</button><button class="back" id="back">← Inicio</button></div></div><div class="workgrid"><div class="viewer"><div class="capture-meta" id="captureMeta"></div><div class="file-tools458" id="fileTools458" aria-label="Herramientas sobre imagen"><span class="ft-label458">HERRAMIENTAS</span><button type="button" data-ft458="cursor" class="active">⌖ CURSOR</button><button type="button" data-ft458="measure">↔ MEDIR</button><button type="button" data-ft458="calibrate">◎ CALIBRAR</button><button type="button" data-ft458="arrow">➜ FLECHA</button><button type="button" data-ft458="roi">▣ ROI IA</button><button type="button" data-ft458="contour">◌ CONTORNO IA</button><button type="button" data-ft458="clear">× LIMPIAR</button><span class="scale459" id="scaleBox459"><label id="scaleLabel459">ESCALA</label><input id="scaleValue459" type="number" min="0" step="0.0001" placeholder="mm/px"><b id="scaleUnit459">mm/px</b></span><em id="selectionState459">SIN SELECCIÓN</em><em id="ftStatus458">CURSOR</em></div><div class="selection-panel470" id="selectionPanel470" hidden><div class="sp-head470"><span>SELECCIONES</span><small id="selectionCount470">0</small></div><div id="selectionList470"></div><div class="sp-help470">CURSOR · seleccioná una marca para editarla o eliminarla</div></div><div class="drop" id="drop"><div><b>Visor OPTIC</b><br><br>Subí una imagen para comenzar el análisis visual.</div></div><div class="annotate-bar" id="annotateBar"><button id="markPoint">＋ Señalar punto</button><button id="clearMarks">Limpiar marcas</button><span class="marker-note">Marcá una estructura y preguntá “¿qué es A?”</span></div><div class="gallery-wrap" id="galleryWrap"><div class="gallery-title"><span>CAPTURAS DE ESTA SESIÓN</span><span class="session-count" id="sessionCount"></span></div><div class="gallery" id="gallery"></div></div><div class="session-tools37" id="sessionTools37"><button id="compare37">▥ COMPARAR ÚLTIMAS 2</button><button id="counterToggle37">● CONTADOR CELULAR</button><button id="pointerToggle37">◎ ¿QUÉ ES ESTO?</button></div><div class="counter37" id="counter37"><span class="count">CATEGORÍA</span><button data-cat="Célula" class="active">Célula</button><button data-cat="Mitosis">Mitosis</button><button data-cat="Positiva">Positiva</button><button id="counterClear37">Limpiar</button><span class="count" id="counterRead37">n = 0</span></div></div><div class="chat"><div class="analysis-head38"><h2>OPTIC · ANALYSIS CONSOLE</h2><p class="sub">SCIENTIFIC IMAGE INTERPRETATION</p><div class="analysis-status38" id="analysisStatus38">AI ENGINE · READY</div></div><div class="analysis-scroll38"><div class="quick-tools" id="quickTools"><button class="quick-tool" data-prompt="Identifica el tejido o preparado visible y fundamenta la identificación con los rasgos morfológicos observables.">Identificar tejido</button><button class="quick-tool" data-prompt="Describe de forma ordenada las estructuras visibles en esta imagen microscópica y su relevancia histológica.">Describir estructuras</button><button class="quick-tool" data-prompt="Señala los principales hallazgos visibles, diferenciando observación directa de interpretación. Enfoque educativo médico.">Hallazgos</button><button class="quick-tool" data-prompt="Compara los hallazgos visibles con la histología normal esperable e indica semejanzas y diferencias observables.">Comparar con normal</button><button class="quick-tool" data-prompt="Genera preguntas docentes breves sobre esta imagen, desde reconocimiento de estructuras hasta integración funcional. Incluye las respuestas al final.">Preguntas docentes</button><button class="quick-tool" data-prompt="Analiza específicamente los marcadores que aparecen sobre la imagen (A, B, C...) e identifica qué estructura podría corresponder a cada uno, explicando el fundamento visual.">Analizar marcadores</button></div><div class="imaging-context44" id="imagingContext44"><div><span>MODALIDAD</span><strong id="modalityLabel44">IMAGEN MÉDICA</strong></div><button id="changeModality44">CAMBIAR</button></div><div class="imaging-tools44" id="imagingTools44"></div><div id="response" class="response"></div></div><div class="analysis-compose38"><textarea class="prompt" id="prompt" placeholder="Ask OPTIC about this field…"></textarea><button class="primary" id="send">ANALYZE</button><div class="console-author463"><strong>DR. MARCELO MARTÍN CIANCI</strong><span>MÉDICO · PROF. UNIV.</span><small>OPTIC IA · MEDHUB</small></div></div></div></div><footer class="brand-footer"><div class="signature"><b>DR. MARCELO MARTÍN CIANCI</b><br>MÉDICO · PROFESOR UNIVERSITARIO</div><div class="line"></div><div class="dependency">OPTIC IA · by MedHub<br><strong>Una herramienta especializada que forma parte del ecosistema MedHub IA</strong></div></footer></section>
+<div class="compare37" id="compareModal37"><div class="compare-card37"><div class="compare-head37"><b>OPTIC IA · COMPARADOR A/B</b><button id="compareClose37">Cerrar</button></div><div class="compare-grid37"><div class="compare-pane37"><img id="compareA37"><span>A · PENÚLTIMA CAPTURA</span></div><div class="compare-pane37"><img id="compareB37"><span>B · ÚLTIMA CAPTURA</span></div></div></div></div><script>
+const home=document.querySelector('#home'),ws=document.querySelector('#workspace'),file=document.querySelector('#file'),drop=document.querySelector('#drop');let imageData=null,fileName=null,mimeType=null,microscopeStream=null,lastSource=null,microscopeCaptures=[],markerMode=false,markers=[];function openWork(){home.style.display='none';ws.classList.add('on')}document.querySelector('#upload').onclick=()=>{file.removeAttribute('capture');file.click()};document.querySelector('#camera').onclick=()=>{file.setAttribute('capture','environment');file.click()};document.querySelector('#microscope').onclick=()=>openMicroscope();document.querySelector('#analyze').onclick=openWork;document.querySelector('#back').onclick=()=>{ws.classList.remove('on');home.style.display='grid'};document.querySelector('#backMicroscope').onclick=()=>{ws.classList.remove('on');openMicroscope()};
+function resetAnalysis455(){opticStudyMemory48911='';markers=[];markerMode=false;const resp=document.querySelector('#response');if(resp)resp.innerHTML='';const prm=document.querySelector('#prompt');if(prm)prm.value='';const st=document.querySelector('#analysisStatus38');if(st)st.textContent='AI ENGINE · READY';const mp=document.querySelector('#markPoint');if(mp)mp.classList.remove('active');drop.classList.remove('annotating')}
+document.querySelector('#back').onclick=()=>{
+  resetAnalysis455();
+  ws.classList.remove('on');
+  const hd=document.getElementById('homeDrop381');
+  if(hd) hd.classList.remove('drag381');
+  const mm=document.getElementById('modalityModal44');
+  if(mm) mm.classList.remove('on');
+  pendingMedicalFile44=null;
+  file.value='';
+  home.style.display='grid';
+  window.scrollTo({top:0,left:0,behavior:'instant'});
+};
+document.querySelector('#changeImage455').onclick=()=>{resetAnalysis455();file.removeAttribute('capture');file.value='';file.click()};
+const microscopePanel=document.querySelector('#microscopePanel'),microscopeVideo=document.querySelector('#microscopeVideo'),cameraSelect=document.querySelector('#cameraSelect'),microscopeStatus=document.querySelector('#microscopeStatus'),microscopeCapture=document.querySelector('#microscopeCapture'),microscopeAnalyze=document.querySelector('#microscopeAnalyze'),liveBadge=document.querySelector('#liveBadge'),liveText=document.querySelector('#liveText'),touptekLive=document.querySelector('#touptekLive'),frozenFrame=document.querySelector('#frozenFrame'),returnLive=document.querySelector('#returnLive');let touptekTimer=null,touptekConnected=false,frozen=false;
+const bridgeBase=(location.hostname==='127.0.0.1'||location.hostname==='localhost')?location.origin:'http://127.0.0.1:8765';touptekLive.crossOrigin='anonymous';
+async function bridgeStatus(){const r=await fetch(bridgeBase+'/status?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Bridge no disponible');return r.json()}
+function setBridgeLive(st){touptekConnected=true;microscopeVideo.pause();microscopeVideo.srcObject=null;microscopeVideo.style.display='none';touptekLive.style.display='block';touptekLive.src=bridgeBase+'/frame.bmp?ts='+Date.now();microscopeCapture.disabled=false;microscopeAnalyze.disabled=false;returnLive.disabled=true;liveBadge.classList.add('on');liveText.textContent='UCMOS EN VIVO';microscopeStatus.textContent='UCMOS conectada por ToupCamSDK · '+(st.camera||'ToupTek')+' · '+st.width+'×'+st.height;const side=document.getElementById('sideStatus34'),res=document.getElementById('sideResolution34');if(side)side.textContent='EN VIVO';if(res)res.textContent=st.width+'×'+st.height;if(touptekTimer)clearInterval(touptekTimer);touptekTimer=setInterval(()=>{if(!frozen)touptekLive.src=bridgeBase+'/frame.bmp?ts='+Date.now()},120);}
+async function connectToupTek(){try{microscopeStatus.textContent='Conectando con OPTIC Bridge / ToupCamSDK…';const st=await bridgeStatus();if(!st.ok)throw new Error(st.error||'La UCMOS todavía no entrega imagen');setBridgeLive(st);return true}catch(e){stopToupTek();microscopeCapture.disabled=true;microscopeAnalyze.disabled=true;liveBadge.classList.remove('on');liveText.textContent='DESCONECTADA';microscopeStatus.textContent='UCMOS / Bridge: '+e.message;return false}}
+async function openMicroscope(){microscopePanel.classList.add('on');await connectToupTek()}
+async function connectMicroscope(){return connectToupTek()}
+async function connectUCMOSUsb(){return connectToupTek()}
+function stopToupTek(){touptekConnected=false;frozen=false;if(touptekTimer){clearInterval(touptekTimer);touptekTimer=null}touptekLive.removeAttribute('src');touptekLive.style.display='none';frozenFrame.style.display='none';microscopeVideo.style.display='none';returnLive.disabled=true}
+function closeMicroscope(){stopToupTek();microscopeCapture.disabled=true;microscopeAnalyze.disabled=true;liveBadge.classList.remove('on');liveText.textContent='DESCONECTADA';microscopePanel.classList.remove('on')}
+document.querySelector('#microscopeConnect').onclick=connectToupTek;document.querySelector('#touptekConnect').onclick=connectToupTek;document.querySelector('#microscopeClose').onclick=closeMicroscope;
+function captureMicroscopeFrame(){const c=document.querySelector('#microscopeCanvas'),src=touptekLive,w=src.naturalWidth,h=src.naturalHeight;if(!touptekConnected||!w||!h){microscopeStatus.textContent='La UCMOS todavía no entrega imagen.';return false}c.width=w;c.height=h;c.getContext('2d').drawImage(src,0,0,w,h);imageData=c.toDataURL('image/jpeg',.96);fileName='microscopio-'+Date.now()+'.jpg';mimeType='image/jpeg';lastSource='microscope';markers=[];const objective=document.querySelector('#objective').value,stain=document.querySelector('#stain').value;microscopeCaptures.push({data:imageData,name:fileName,objective,stain,n:microscopeCaptures.length+1});document.querySelector('#backMicroscope').classList.add('on');showImage(imageData);updateMicroscopeUI(objective,stain);renderGallery();return true}document.querySelector('#microscopeCapture').onclick=()=>{if(!captureMicroscopeFrame())return;frozen=true;frozenFrame.src=imageData;frozenFrame.style.display='block';touptekLive.style.display='none';returnLive.disabled=false;liveBadge.classList.remove('on');liveText.textContent='CAPTURA CONGELADA';microscopeStatus.textContent='Captura guardada · podés volver al vivo o analizarla.'};returnLive.onclick=()=>{frozen=false;frozenFrame.style.display='none';if(touptekConnected){touptekLive.style.display='block';liveBadge.classList.add('on');liveText.textContent='UCMOS EN VIVO';microscopeStatus.textContent='UCMOS conectada · vista en vivo restaurada.'}returnLive.disabled=true};microscopeAnalyze.onclick=()=>{if(!frozen&&!captureMicroscopeFrame())return;if(frozen){imageData=frozenFrame.src;fileName='microscopio-'+Date.now()+'.jpg';mimeType='image/jpeg';lastSource='microscope'}closeMicroscope();openWork();const p=document.querySelector('#prompt');if(!p.value.trim())p.value='Analiza esta captura microscópica. Describe sistemáticamente el campo, identifica estructuras visibles y explica los hallazgos con enfoque educativo médico.';document.querySelector('#send').click()};
+function showImage(src){drop.innerHTML='<div class="image-stage" id="imageStage"><img src="'+src+'"></div>';renderMarkers()}
+function updateMicroscopeUI(objective='',stain=''){const meta=document.querySelector('#captureMeta'),quick=document.querySelector('#quickTools'),ann=document.querySelector('#annotateBar');if(lastSource==='microscope'){meta.classList.add('on');quick.classList.add('on');ann.classList.add('on');meta.innerHTML='<span class="meta-pill">CAPTURA MICROSCÓPICA</span>'+(objective?'<span class="meta-pill">OBJETIVO '+objective+'</span>':'')+(stain?'<span class="meta-pill">'+esc(stain)+'</span>':'')}else{meta.classList.remove('on');quick.classList.remove('on');ann.classList.remove('on');meta.innerHTML=''}}
+function renderGallery(){const wrap=document.querySelector('#galleryWrap'),g=document.querySelector('#gallery'),count=document.querySelector('#sessionCount');if(!microscopeCaptures.length){wrap.classList.remove('on');return}wrap.classList.add('on');count.textContent=microscopeCaptures.length+' captura'+(microscopeCaptures.length===1?'':'s');g.innerHTML='';microscopeCaptures.forEach((cap,i)=>{const b=document.createElement('button');b.className='gallery-item';b.innerHTML='<img src="'+cap.data+'"><span>Campo '+String(i+1).padStart(2,'0')+'</span>';b.onclick=()=>{imageData=cap.data;fileName=cap.name;mimeType='image/jpeg';lastSource='microscope';markers=[];document.querySelector('#backMicroscope').classList.add('on');showImage(imageData);updateMicroscopeUI(cap.objective,cap.stain)};g.appendChild(b)})}
+function renderMarkers(){const stage=document.querySelector('#imageStage');if(!stage)return;stage.querySelectorAll('.marker').forEach(m=>m.remove());markers.forEach((m,i)=>{const el=document.createElement('span');el.className='marker';el.textContent=String.fromCharCode(65+i);el.style.left=(m.x*100)+'%';el.style.top=(m.y*100)+'%';stage.appendChild(el)})}
+document.querySelector('#markPoint').onclick=()=>{markerMode=!markerMode;document.querySelector('#markPoint').classList.toggle('active',markerMode);drop.classList.toggle('annotating',markerMode)};document.querySelector('#clearMarks').onclick=()=>{markers=[];renderMarkers()};drop.addEventListener('click',e=>{if(!markerMode||!imageData)return;const stage=document.querySelector('#imageStage');if(!stage)return;const r=stage.getBoundingClientRect();markers.push({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height});renderMarkers()});
+document.querySelectorAll('.quick-tool').forEach(b=>b.onclick=()=>{document.querySelector('#prompt').value=b.dataset.prompt;document.querySelector('#prompt').focus()});
+function imageForAnalysis(){const annotated=window.opticGetAnnotatedImage458?.();if(annotated)return annotated;if(!markers.length)return imageData;const img=document.querySelector('#imageStage img');if(!img)return imageData;const c=document.createElement('canvas');c.width=img.naturalWidth||1200;c.height=img.naturalHeight||900;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);markers.forEach((m,i)=>{const x=m.x*c.width,y=m.y*c.height,rad=Math.max(18,c.width*.018);ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.fillStyle='rgba(15,74,111,.82)';ctx.fill();ctx.lineWidth=Math.max(3,c.width*.003);ctx.strokeStyle='white';ctx.stroke();ctx.fillStyle='white';ctx.font='bold '+Math.max(18,c.width*.018)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String.fromCharCode(65+i),x,y)});return c.toDataURL('image/jpeg',.96)}
+function loadDropped381(f,goWork=true){if(!f)return;opticStudyMemory48911='';const okType=(f.type&&f.type.startsWith('image/'))||/\.(jpe?g|png|webp|bmp)$/i.test(f.name||'');if(!okType){alert('OPTIC IA acepta imágenes JPG, JPEG, PNG, WEBP o BMP.');return}fileName=f.name;mimeType=f.type||'image/jpeg';lastSource='file';document.querySelector('#backMicroscope').classList.remove('on');const r=new FileReader();r.onload=()=>{imageData=r.result;markers=[];showImage(imageData);updateMicroscopeUI();if(goWork)openWork()};r.readAsDataURL(f)}
+file.onchange=()=>{const f=file.files[0];if(f)loadDropped381(f,true)};
+const homeDrop381=document.getElementById('homeDrop381');
+['dragenter','dragover'].forEach(ev=>homeDrop381.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();homeDrop381.classList.add('drag381')}));
+['dragleave','drop'].forEach(ev=>homeDrop381.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();if(ev==='drop'){const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];homeDrop381.classList.remove('drag381');if(f)loadDropped381(f,true)}else if(!homeDrop381.contains(e.relatedTarget))homeDrop381.classList.remove('drag381')}));
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();drop.classList.add('drag381')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();if(ev==='drop'){drop.classList.remove('drag381');const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)loadDropped381(f,false)}else if(!drop.contains(e.relatedTarget))drop.classList.remove('drag381')}));
+function esc(t){return String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}function cleanMath48914(t){return String(t??'').replace(/\$\$([\s\S]*?)\$\$/g,(m,f)=>{let q=f.trim();q=q.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g,'($1) / ($2)').replace(/\\text\{([^{}]+)\}/g,'$1').replace(/\\times/g,'×').replace(/\\cdot/g,'·').replace(/\\approx/g,'≈').replace(/\\leq/g,'≤').replace(/\\geq/g,'≥').replace(/\\%/g,'%').replace(/\\,/g,' ').replace(/\\;/g,' ').replace(/\\!/g,'').replace(/\\([A-Za-z]+)/g,'$1').replace(/[{}]/g,'');return '\n'+q+'\n'}).replace(/\$([^$\n]+)\$/g,(m,f)=>f.trim())}function renderAnswer(t){let x=esc(cleanMath48914(t)).replace(/\r\n?/g,'\n');x=x.replace(/^#{4,6}\s+(.+)$/gm,'<h3>$1</h3>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h2>$1</h2>').replace(/^#\s+(.+)$/gm,'<h2>$1</h2>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');let lines=x.split('\n'),out=[],list=null;for(const raw of lines){const line=raw.trimEnd();const bullet=line.match(/^\s*[-*•]\s+(.+)/);const numbered=line.match(/^\s*\d+[.)]\s+(.+)/);if(bullet||numbered){const wanted=bullet?'ul':'ol';if(list!==wanted){if(list)out.push('</'+list+'>');out.push('<'+wanted+'>');list=wanted}out.push('<li>'+(bullet?bullet[1]:numbered[1])+'</li>');continue}if(list){out.push('</'+list+'>');list=null}if(!line.trim())continue;if(/^<h[23]>/.test(line))out.push(line);else out.push('<div>'+line+'</div>')}if(list)out.push('</'+list+'>');return out.join('')}let opticStudyMemory48911='';
+document.querySelector('#send').onclick=async()=>{
+ const response=document.querySelector('#response'),
+ rawPrompt=document.querySelector('#prompt').value.trim()||'Analiza esta imagen con enfoque educativo médico. Describe los hallazgos visibles, identifica estructuras y explica sus fundamentos.',
+ selectionContext=window.opticGetSelectionContext459?.()||'',
+ modalityContext=currentModality44?'[MODALIDAD SELECCIONADA: '+(modality44[currentModality44]?.label||currentModality44)+']\n':'',
+ hasSelection=/FLECHA IA ACTIVA|ROI IA ACTIVO|CONTORNO IA ACTIVO/.test(selectionContext);
+ let prompt=modalityContext+(selectionContext?selectionContext+'\n':'');
+ if(hasSelection&&opticStudyMemory48911){
+   prompt+='[MEMORIA DEL MISMO ESTUDIO · análisis previo de la imagen completa]\n'+opticStudyMemory48911+
+   '\n[INSTRUCCIÓN: usá esta memoria como contexto del mismo campo/estudio para interpretar la selección actual. Correlacioná la estructura señalada con el órgano, tejido, arquitectura y relaciones ya observadas. Si el detalle actual contradice la memoria, priorizá la morfología visible y explicitá la incertidumbre.]\n';
+ }
+ prompt+=rawPrompt;
+ if(!imageData){response.textContent='Primero subí o capturá una imagen.';return}
+ response.innerHTML='<div class="status">OPTIC IA está analizando…</div>';
+ const st38=document.querySelector('#analysisStatus38');if(st38)st38.textContent='OPTIC IA · ANALIZANDO';
+ try{
+   const analysisImage=hasSelection?imageForAnalysis():imageData;
+   const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+     message:prompt,
+     fileName:fileName||'imagen.jpg',
+     mimeType:((analysisImage.match(/^data:([^;]+);base64,/)||[])[1]||mimeType||'image/jpeg'),
+     fileData:analysisImage.replace(/^data:[^;]+;base64,/,'')
+   })});
+   const data=await res.json();
+   const answer=data.reply||data.response||data.message||data.error||JSON.stringify(data);
+   response.innerHTML=renderAnswer(answer);
+   if(!hasSelection && res.ok && answer){
+     opticStudyMemory48911=String(answer).slice(0,7000);
+     if(st38)st38.textContent='OPTIC IA · CONTEXTO DEL ESTUDIO ACTIVO';
+   }else if(st38)st38.textContent='OPTIC IA · COMPLETADO';
+ }catch(e){
+   response.textContent='No se pudo completar el análisis. Revisá la configuración del backend/API.';
+   if(st38)st38.textContent='OPTIC IA · ERROR';
+ }
+};
+
+// v4.5.5 Medical Imaging context
+let pendingMedicalFile44=null, currentModality44='';
+const modalityModal44=document.getElementById('modalityModal44'), modalityLabel44=document.getElementById('modalityLabel44'), imagingContext44=document.getElementById('imagingContext44'), imagingTools44=document.getElementById('imagingTools44');
+const modality44={auto:{label:'AUTO · IMAGEN MÉDICA',prompts:[['ANÁLISIS GENERAL','Analiza esta imagen médica. Primero identifica con cautela la modalidad y región anatómica si son inferibles; luego describe sistemáticamente los hallazgos visibles, separando observación de interpretación y señalando limitaciones. Enfoque educativo.'],['ANATOMÍA','Describe la anatomía visible en esta imagen médica y las principales estructuras reconocibles.'],['HALLAZGOS','Enumera los hallazgos visibles de forma sistemática, diferenciando observaciones directas de posibles interpretaciones.']]},microscopy:{label:'MICROSCOPÍA',prompts:[['IDENTIFICAR TEJIDO','Identifica el tejido u órgano más probable y fundamenta la respuesta con rasgos histológicos visibles.'],['ESTRUCTURAS','Describe ordenadamente las estructuras microscópicas visibles y su relevancia histológica.'],['HALLAZGOS','Señala los principales hallazgos microscópicos visibles, diferenciando observación directa de interpretación.']]},xray:{label:'RADIOGRAFÍA · RX',prompts:[['LECTURA SISTEMÁTICA','Realiza una lectura sistemática educativa de esta radiografía: técnica/proyección si puede inferirse, región anatómica, hallazgos visibles y limitaciones.'],['ANATOMÍA','Identifica y describe las principales estructuras anatómicas visibles en esta radiografía.'],['HALLAZGOS','Describe los hallazgos radiográficos visibles, localización y características, sin afirmar diagnósticos no sustentados.']]},ct:{label:'TOMOGRAFÍA · TC',prompts:[['LECTURA TC','Analiza educativamente esta imagen de tomografía: región anatómica, plano si puede inferirse, ventana aparente, anatomía y hallazgos visibles. Señala limitaciones de analizar una captura aislada.'],['ANATOMÍA TC','Describe las estructuras anatómicas visibles en este corte tomográfico y su relación espacial.'],['HALLAZGOS TC','Describe densidades y hallazgos visibles en esta imagen de TC, localización y características, diferenciando observación de interpretación.']]},mri:{label:'RESONANCIA · RM',prompts:[['LECTURA RM','Analiza educativamente esta imagen de resonancia: región anatómica, plano y secuencia si pueden inferirse, anatomía y hallazgos visibles. Explicita incertidumbres.'],['ANATOMÍA RM','Describe las estructuras anatómicas visibles y sus relaciones en esta imagen de resonancia.'],['SEÑAL / HALLAZGOS','Describe patrones de señal y hallazgos visibles sin asumir una secuencia o diagnóstico cuando no puedan determinarse con seguridad.']]},us:{label:'ECOGRAFÍA · US',prompts:[['LECTURA ECO','Analiza educativamente esta ecografía: región si es inferible, estructuras, ecogenicidad, hallazgos visibles y limitaciones de una imagen estática.'],['ANATOMÍA ECO','Identifica las estructuras anatómicas visibles y describe su ecogenicidad relativa.'],['HALLAZGOS ECO','Describe los hallazgos ecográficos visibles, su localización y características, separando observación de interpretación.']]}};
+function guessModality44(name=''){const n=name.toLowerCase();if(/\b(ct|tc|tac|tomograf)/.test(n))return'ct';if(/\b(mri|rm|resonan)/.test(n))return'mri';if(/\b(rx|xray|radiograf)/.test(n))return'xray';if(/\b(us|eco|ultras)/.test(n))return'us';if(/histo|micro|biops|citolog/.test(n))return'microscopy';return'auto'}
+function renderImagingTools44(mod){const cfg=modality44[mod]||modality44.auto;currentModality44=mod;window.currentModality44=mod;setTimeout(()=>window.opticSyncScale459?.(),0);modalityLabel44.textContent=cfg.label;imagingContext44.classList.add('on');imagingTools44.classList.add('on');document.querySelector('.chat')?.classList.add('medical-mode44');imagingTools44.innerHTML='';cfg.prompts.forEach(([label,prompt])=>{const b=document.createElement('button');b.textContent=label;b.onclick=()=>{document.getElementById('prompt').value=prompt;document.getElementById('prompt').focus()};imagingTools44.appendChild(b)});const teach=document.createElement('button');teach.textContent='MODO DOCENCIA';teach.onclick=()=>{document.getElementById('prompt').value='Usa esta imagen en modo docencia: formula preguntas progresivas de interpretación visual y anatomía, sin revelar primero la respuesta. Luego ofrece claves de corrección.';document.getElementById('prompt').focus()};imagingTools44.appendChild(teach)}
+function chooseModality44(mod){modalityModal44.classList.remove('on');modalityModal44.setAttribute('aria-hidden','true');renderImagingTools44(mod);if(pendingMedicalFile44){const f=pendingMedicalFile44;pendingMedicalFile44=null;loadMedicalFile44(f,true)}}
+function openModality44(f=null){pendingMedicalFile44=f;modalityModal44.classList.add('on');modalityModal44.setAttribute('aria-hidden','false')}
+document.querySelectorAll('[data-modality]').forEach(b=>b.onclick=()=>chooseModality44(b.dataset.modality));document.getElementById('modalityClose44').onclick=()=>{modalityModal44.classList.remove('on');pendingMedicalFile44=null};document.getElementById('changeModality44').onclick=()=>openModality44(null);
+function loadMedicalFile44(f,goWork=true){if(!f)return;const okType=(f.type&&f.type.startsWith('image/'))||/\.(jpe?g|png|webp|bmp)$/i.test(f.name||'');if(!okType){alert('En v4.5.5 esta primera etapa acepta imágenes JPG, JPEG, PNG, WEBP o BMP. El soporte DICOM se incorporará como módulo específico.');return}fileName=f.name;mimeType=f.type||'image/jpeg';lastSource='file';document.querySelector('#backMicroscope').classList.remove('on');const r=new FileReader();r.onload=()=>{imageData=r.result;markers=[];showImage(imageData);updateMicroscopeUI();if(goWork)openWork()};r.readAsDataURL(f)}
+// Route ARCHIVO and drag/drop through modality selector without altering camera/microscope flows.
+document.querySelector('#upload').onclick=()=>{file.removeAttribute('capture');file.value='';file.click()};
+file.onchange=()=>{const f=file.files[0];if(f)openModality44(f)};
+// Replace drag handlers at capture phase so legacy handlers do not process first.
+function interceptDrop44(el,goWork){el.addEventListener('drop',e=>{const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(!f)return;e.preventDefault();e.stopImmediatePropagation();openModality44(f)},true)}
+interceptDrop44(homeDrop381,true);interceptDrop44(drop,false);
+
+if((location.hostname==='127.0.0.1'||location.hostname==='localhost')&&new URLSearchParams(location.search).get('microscope')==='1'){setTimeout(()=>{try{openMicroscope()}catch(e){}},350)}
+</script><script id="v35-imaging-js">
+(()=>{
+ const stage=document.querySelector('.microscope-stage'), toolbar=document.getElementById('imageTools35'), pop=document.getElementById('adjustPop35'), range=document.getElementById('adjustRange35'), name=document.getElementById('adjustName35'), val=document.getElementById('adjustValue35');
+ if(!stage||!toolbar)return;
+ const state={brightness:100,contrast:100,gamma:100,saturate:100,sharpness:0,zoom:1,rotate:0};
+ const defs={brightness:['BRILLO',50,150,1,'%'],contrast:['CONTRASTE',50,160,1,'%'],gamma:['GAMMA',50,180,1,'%'],saturate:['SATURACIÓN',0,180,1,'%'],sharpness:['NITIDEZ',0,100,1,'%']};
+ let active=null, originalHeld=false;
+ const media=()=>[document.getElementById('microscopeVideo'),document.getElementById('touptekLive'),document.getElementById('frozenFrame')].filter(Boolean);
+ function filterString(){if(originalHeld)return 'none'; const gamma=Math.max(.35,200/(state.gamma+100)); const sharp=state.sharpness/100; return `brightness(${state.brightness}%) contrast(${state.contrast+sharp*18}%) saturate(${state.saturate}%) opacity(1) drop-shadow(0 0 ${sharp*0.35}px rgba(255,255,255,${sharp*.18}))`;}
+ function apply(){media().forEach(el=>{el.style.filter=filterString();el.style.transform=`scale(${state.zoom}) rotate(${state.rotate}deg)`}); const changed=['brightness','contrast','gamma','saturate','sharpness'].some(k=>state[k]!==({brightness:100,contrast:100,gamma:100,saturate:100,sharpness:0})[k]); const is=document.getElementById('imageState35'),zs=document.getElementById('zoomState35'),rs=document.getElementById('rotateState35');if(is)is.textContent=changed?'AJUSTADA':'NEUTRA';if(zs)zs.textContent=Math.round(state.zoom*100)+'%';if(rs)rs.textContent=((state.rotate%360)+360)%360+'°';}
+ function openControl(k,btn){active=k;toolbar.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const d=defs[k];name.textContent=d[0];range.min=d[1];range.max=d[2];range.step=d[3];range.value=state[k];val.textContent=state[k]+d[4];pop.classList.add('on');pop.style.top=Math.max(56,btn.offsetTop-2)+'px';}
+ toolbar.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const c=b.dataset.control,a=b.dataset.action;if(c){openControl(c,b);return}pop.classList.remove('on');toolbar.querySelectorAll('button').forEach(x=>x.classList.remove('active'));if(a==='zoomIn')state.zoom=Math.min(3,state.zoom+.15);if(a==='zoomOut')state.zoom=Math.max(.5,state.zoom-.15);if(a==='oneToOne')state.zoom=1;if(a==='fit')state.zoom=1;if(a==='rotate')state.rotate=(state.rotate+90)%360;if(a==='reset'){Object.assign(state,{brightness:100,contrast:100,gamma:100,saturate:100,sharpness:0,zoom:1,rotate:0})}apply()});
+ range.addEventListener('input',()=>{if(!active)return;state[active]=Number(range.value);val.textContent=state[active]+defs[active][4];apply()});
+ const orig=document.getElementById('original35');if(orig){const on=()=>{originalHeld=true;orig.classList.add('active');apply()},off=()=>{originalHeld=false;orig.classList.remove('active');apply()};orig.addEventListener('pointerdown',on);orig.addEventListener('pointerup',off);orig.addEventListener('pointerleave',off);orig.addEventListener('pointercancel',off)}
+ document.addEventListener('pointerdown',e=>{if(pop.classList.contains('on')&&!pop.contains(e.target)&&!toolbar.contains(e.target)){pop.classList.remove('on');toolbar.querySelectorAll('button').forEach(x=>x.classList.remove('active'))}});
+ apply();
+})();
+</script>
+
+<style id="v36-science-tools">
+#scienceOverlay36{position:absolute;inset:0;width:100%;height:100%;z-index:10;pointer-events:none;touch-action:none}
+#scienceOverlay36.active{pointer-events:auto;cursor:crosshair}
+#scienceHint36{position:absolute;right:10px;bottom:10px;z-index:11;padding:5px 7px;border:1px solid #31596c;border-radius:4px;background:rgba(10,32,44,.88);color:#86adbd;font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.09em}
+.image-tools35 button[data-science]{font-size:8px}.image-tools35 button[data-science="roi"]{font-size:6px;letter-spacing:-.03em}
+.science-panel36{border-top:1px solid #294b5b;padding-top:10px;display:grid;gap:6px}.science-panel36 label{display:flex;align-items:center;gap:5px}.science-panel36 input{min-width:0;width:100%;background:#0c2230;border:1px solid #31596c;border-radius:4px;color:#e0edf2;padding:7px 6px;font:600 9px ui-monospace,SFMono-Regular,Menlo,monospace}.science-panel36 label span,.science-panel36 small{font:500 7px ui-monospace,SFMono-Regular,Menlo,monospace;color:#668fa1}.science-panel36 button{border:1px solid #31596c;border-radius:4px;background:#17394a;color:#dcecf3;padding:7px 6px;font:600 7px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;cursor:pointer}.science-panel36 button:not(:disabled){background:#17607b;border-color:#2698b5}.science-panel36 button:disabled{opacity:.35;cursor:not-allowed}
+</style>
+<script id="v36-science-js">
+(()=>{
+ const stage=document.querySelector('.microscope-stage'),ov=document.getElementById('scienceOverlay36'),hint=document.getElementById('scienceHint36'),tools=document.getElementById('imageTools35'),cal=document.getElementById('umPerPx36'),calStatus=document.getElementById('calStatus36'),roiBtn=document.getElementById('analyzeRoi36');
+ if(!stage||!ov||!tools)return;
+ const ctx=ov.getContext('2d'); let mode=null,start=null,preview=null,roi=null,scaleOn=false; const marks=[]; let labelN=0;
+ const activeMedia=()=>[document.getElementById('frozenFrame'),document.getElementById('touptekLive'),document.getElementById('microscopeVideo')].find(el=>el&&getComputedStyle(el).display!=='none'&&((el.tagName==='VIDEO'&&el.videoWidth)||(el.tagName==='IMG'&&el.naturalWidth)))||null;
+ function ratio(){const r=ov.getBoundingClientRect();return {w:r.width,h:r.height,sx:ov.width/r.width,sy:ov.height/r.height}}
+ function resize(){const r=stage.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);ov.width=Math.max(1,Math.round(r.width*d));ov.height=Math.max(1,Math.round(r.height*d));draw()}
+ function pos(e){const r=ov.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*ov.width,y:(e.clientY-r.top)/r.height*ov.height}}
+ function micron(px){const v=parseFloat(cal.value);return v>0?px*v:null}
+ function fmtDist(a,b){const d=Math.hypot(b.x-a.x,b.y-a.y)/(devicePixelRatio||1),u=micron(d);return u===null?Math.round(d)+' px':(u<100?u.toFixed(1):Math.round(u))+' μm'}
+ function draw(){ctx.clearRect(0,0,ov.width,ov.height);ctx.lineWidth=Math.max(2,ov.width/600);ctx.font=`600 ${Math.max(11,ov.width/85)}px ui-monospace,monospace`;ctx.textBaseline='bottom';
+  for(const m of marks){ctx.strokeStyle='#7ee5f0';ctx.fillStyle='#e8fbff';if(m.type==='point'){ctx.beginPath();ctx.arc(m.a.x,m.a.y,8,0,Math.PI*2);ctx.stroke();ctx.fillText(m.label,m.a.x+11,m.a.y-7)}else{ctx.beginPath();ctx.moveTo(m.a.x,m.a.y);ctx.lineTo(m.b.x,m.b.y);ctx.stroke();ctx.fillText(fmtDist(m.a,m.b),(m.a.x+m.b.x)/2+6,(m.a.y+m.b.y)/2-5)}}
+  if(roi){ctx.strokeStyle='#f0c66a';ctx.setLineDash([7,5]);ctx.strokeRect(roi.x,roi.y,roi.w,roi.h);ctx.setLineDash([]);ctx.fillStyle='#f4d98e';ctx.fillText('ROI',roi.x+5,roi.y-4)}
+  if(preview&&start){ctx.strokeStyle=mode==='roi'?'#f0c66a':'#7ee5f0';ctx.setLineDash([6,5]);if(mode==='roi')ctx.strokeRect(start.x,start.y,preview.x-start.x,preview.y-start.y);else{ctx.beginPath();ctx.moveTo(start.x,start.y);ctx.lineTo(preview.x,preview.y);ctx.stroke()}ctx.setLineDash([])}
+  if(scaleOn){const v=parseFloat(cal.value);if(v>0){const target=100,csspx=target/v,px=csspx*(devicePixelRatio||1),x=ov.width-px-28,y=ov.height-30;ctx.strokeStyle='#fff';ctx.fillStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+px,y);ctx.stroke();ctx.fillText('100 μm',x,y-5)}}
+ }
+ function setMode(m,b){mode=m;start=preview=null;ov.classList.toggle('active',!!m);tools.querySelectorAll('[data-science]').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');hint.textContent=m==='annotate'?'ANOTACIÓN · CLIC PARA MARCAR':m==='measure'?'MEDICIÓN · ARRASTRÁ UNA LÍNEA':m==='roi'?'ROI · ARRASTRÁ UNA REGIÓN':'IMAGEN · SIN HERRAMIENTA'}
+ tools.addEventListener('click',e=>{const b=e.target.closest('[data-science]');if(!b)return;const a=b.dataset.science;if(a==='clear'){marks.length=0;roi=null;roiBtn.disabled=true;setMode(null);draw();return}if(a==='scale'){scaleOn=!scaleOn;b.classList.toggle('active',scaleOn);draw();return}setMode(mode===a?null:a,mode===a?null:b)});
+ ov.addEventListener('pointerdown',e=>{if(!mode)return;ov.setPointerCapture(e.pointerId);const p=pos(e);if(mode==='annotate'){marks.push({type:'point',a:p,label:String.fromCharCode(65+(labelN++%26))});draw();return}start=p;preview=p;draw()});
+ ov.addEventListener('pointermove',e=>{if(start&&(mode==='measure'||mode==='roi')){preview=pos(e);draw()}});
+ ov.addEventListener('pointerup',e=>{if(!start)return;const p=pos(e);if(mode==='measure')marks.push({type:'line',a:start,b:p});if(mode==='roi'){roi={x:Math.min(start.x,p.x),y:Math.min(start.y,p.y),w:Math.abs(p.x-start.x),h:Math.abs(p.y-start.y)};if(roi.w<12||roi.h<12)roi=null;roiBtn.disabled=!roi}start=preview=null;draw()});
+ cal.addEventListener('input',()=>{const v=parseFloat(cal.value);calStatus.textContent=v>0?`Calibrada · ${v} μm/px`:'Sin calibrar · mediciones en px';draw()});
+ roiBtn.addEventListener('click',()=>{if(!roi)return;const media=activeMedia();if(!media){hint.textContent='ROI · SIN IMAGEN ACTIVA';return}const c=document.createElement('canvas'),mw=media.tagName==='VIDEO'?media.videoWidth:media.naturalWidth,mh=media.tagName==='VIDEO'?media.videoHeight:media.naturalHeight;if(!mw||!mh)return;const sx=roi.x/ov.width*mw,sy=roi.y/ov.height*mh,sw=roi.w/ov.width*mw,sh=roi.h/ov.height*mh;c.width=Math.max(1,Math.round(sw));c.height=Math.max(1,Math.round(sh));c.getContext('2d').drawImage(media,sx,sy,sw,sh,0,0,c.width,c.height);imageData=c.toDataURL('image/jpeg',.96);fileName='ROI-microscopio.jpg';mimeType='image/jpeg';lastSource='microscope';markers=[];showImage(imageData);document.getElementById('prompt').value='Analiza exclusivamente esta región de interés (ROI). Identifica las estructuras visibles, describe sus rasgos morfológicos y diferencia observación directa de interpretación.';document.getElementById('backMicroscope').classList.add('on');openWork()});
+ new ResizeObserver(resize).observe(stage);window.addEventListener('resize',resize);setTimeout(resize,100);
+})();
+</script>
+
+<script id="v37-js">
+(()=>{
+ const tools=document.getElementById('sessionTools37'), cmp=document.getElementById('compare37'), modal=document.getElementById('compareModal37');
+ const counterToggle=document.getElementById('counterToggle37'), counterPanel=document.getElementById('counter37'), pointerToggle=document.getElementById('pointerToggle37');
+ let mode='',cat='Célula',counts=[],pointer=null;
+ function updateTools(){if(typeof microscopeCaptures!=='undefined'&&microscopeCaptures.length)tools.classList.add('on');else tools.classList.remove('on');cmp.disabled=!(typeof microscopeCaptures!=='undefined'&&microscopeCaptures.length>=2)}
+ const oldRender=window.renderGallery; if(typeof oldRender==='function'){window.renderGallery=function(){oldRender();updateTools()}}
+ setInterval(updateTools,700);
+ cmp.addEventListener('click',()=>{if(microscopeCaptures.length<2)return;document.getElementById('compareA37').src=microscopeCaptures[microscopeCaptures.length-2].data;document.getElementById('compareB37').src=microscopeCaptures[microscopeCaptures.length-1].data;modal.classList.add('on')});
+ document.getElementById('compareClose37').onclick=()=>modal.classList.remove('on');
+ counterToggle.onclick=()=>{mode=mode==='count'?'':'count';counterToggle.classList.toggle('active',mode==='count');pointerToggle.classList.remove('active');counterPanel.classList.toggle('on',mode==='count');renderExtras()};
+ pointerToggle.onclick=()=>{mode=mode==='pointer'?'':'pointer';pointerToggle.classList.toggle('active',mode==='pointer');counterToggle.classList.remove('active');counterPanel.classList.remove('on');renderExtras()};
+ counterPanel.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{cat=b.dataset.cat;counterPanel.querySelectorAll('[data-cat]').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
+ document.getElementById('counterClear37').onclick=()=>{counts=[];renderExtras()};
+ function renderExtras(){const st=document.getElementById('imageStage');if(!st)return;st.querySelectorAll('.counter-dot37,.pointer37').forEach(x=>x.remove());counts.forEach((q,i)=>{const d=document.createElement('i');d.className='counter-dot37';d.style.left=(q.x*100)+'%';d.style.top=(q.y*100)+'%';d.textContent=i+1;d.title=q.cat;st.appendChild(d)});if(pointer){const d=document.createElement('i');d.className='pointer37';d.style.left=(pointer.x*100)+'%';d.style.top=(pointer.y*100)+'%';d.textContent='?';st.appendChild(d)};const by={};counts.forEach(q=>by[q.cat]=(by[q.cat]||0)+1);document.getElementById('counterRead37').textContent='n = '+counts.length+(counts.length?' · '+Object.entries(by).map(([k,v])=>k+' '+v).join(' · '):'')}
+ drop.addEventListener('click',e=>{if(!imageData||!mode)return;const st=document.getElementById('imageStage');if(!st)return;const r=st.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;if(x<0||x>1||y<0||y>1)return;if(mode==='count'){counts.push({x,y,cat});renderExtras()}else if(mode==='pointer'){pointer={x,y};renderExtras();const p=document.getElementById('prompt');p.value='¿Qué estructura se encuentra en el punto señalado con ?. Identifícala a partir de la morfología visible, explica qué rasgos sustentan la identificación y aclara el grado de certeza.';p.focus()}},true);
+ const oldShow=window.showImage;if(typeof oldShow==='function'){window.showImage=function(src){oldShow(src);counts=[];pointer=null;setTimeout(renderExtras,0)}}
+ updateTools();
+})();
+</script>
+
+<style id="v39-analysis-workstation">
+@media(min-width:821px){
+.viewer{position:relative!important;padding:12px!important;background:linear-gradient(180deg,#e8f0f4,#dfe9ee)!important;border-color:#b9cbd4!important;box-shadow:inset 0 1px rgba(255,255,255,.75)!important}
+.viewer-pro39{display:flex;align-items:center;justify-content:space-between;gap:10px;height:36px;margin:-2px 0 8px;padding:0 9px;border:1px solid #b9cbd4;border-radius:6px;background:#102d3d;color:#dcecf3}
+.viewer-pro39 .meta39{display:flex;gap:13px;align-items:center;min-width:0;font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:#8fb3c1;white-space:nowrap;overflow:hidden}.viewer-pro39 .meta39 strong{color:#eaf5f8;font-weight:600}.viewer-pro39 .tools39{display:flex;gap:3px;align-items:center;flex:0 0 auto}.viewer-pro39 button{width:27px;height:25px;padding:0;border:1px solid transparent;border-radius:4px;background:transparent;color:#a9c7d2;font:600 10px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}.viewer-pro39 button:hover,.viewer-pro39 button.active{background:#1b4558;border-color:#3c6879;color:#fff}.viewer-pro39 .sep39{width:1px;height:17px;background:#31586a;margin:0 2px}
+.viewer-adjust39{display:none;position:absolute;z-index:25;right:16px;top:55px;width:220px;padding:11px;border:1px solid #3b6577;border-radius:6px;background:rgba(13,38,52,.97);box-shadow:0 12px 32px rgba(0,0,0,.24);color:#dcecf3}.viewer-adjust39.on{display:block}.viewer-adjust39 label{display:grid;grid-template-columns:70px 1fr 32px;align-items:center;gap:7px;margin:7px 0;font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.07em;color:#8fb3c1}.viewer-adjust39 input{width:100%;accent-color:#2da3c1}.viewer-adjust39 output{text-align:right;color:#eaf5f8}
+.drop{position:relative!important;overflow:hidden!important;background:#07131b!important;border:1px solid #7893a0!important}.drop .image-stage{overflow:hidden!important;background:#07131b!important}.drop .image-stage>img{transition:filter .08s linear,transform .12s ease!important;transform-origin:center center!important;will-change:filter,transform}.drop:before{content:'OPTIC · IMAGE VIEWER';position:absolute;z-index:4;left:9px;top:8px;padding:4px 6px;border-radius:4px;background:rgba(6,25,35,.64);color:#9bc0ce;font:600 7px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;pointer-events:none}
+.annotate-bar{margin-top:7px!important;padding:7px 8px;border:1px solid #c2d2da;border-radius:6px;background:rgba(255,255,255,.55)}.annotate-bar button,.session-tools37 button,.counter37 button{border-radius:5px!important;font-size:9px!important;padding:6px 8px!important}.gallery-wrap{margin-top:8px!important}.session-tools37{margin-top:7px!important}
+.chat{background:#edf4f7!important;border-color:#b9cbd4!important}.analysis-head38{background:#102d3d!important;border-bottom-color:#31596c!important;color:#eef7fa!important;padding:13px 15px 11px!important}.analysis-head38 h2{font-size:16px!important;color:#f3f9fb!important}.analysis-head38 .sub{color:#9fc0cc!important}.analysis-status38{color:#8fd5e2!important}.analysis-status38:before{background:#55c5d8!important}.analysis-scroll38{background:linear-gradient(180deg,#f5f9fa,#edf4f7)!important}.quick-tools{gap:6px!important}.quick-tool{border-radius:5px!important;background:#fff!important;font-size:10px!important;padding:8px 9px!important}.analysis-compose38{background:#e3edf1!important;border-top-color:#bdcfd7!important}.analysis-compose38 .prompt{border-radius:5px!important}.analysis-compose38 .primary{border-radius:5px!important}
+}
+@media(max-width:820px){.viewer-pro39{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;padding:7px;border:1px solid rgba(39,113,153,.15);border-radius:7px;background:#102d3d;color:white}.viewer-pro39 .meta39{width:100%;font-size:8px;color:#9fc0cc}.viewer-pro39 .tools39{display:flex;gap:4px;overflow-x:auto}.viewer-pro39 button{min-width:32px;height:30px;border:1px solid #31596c;border-radius:5px;background:#17394a;color:#dcecf3}.viewer-pro39 .sep39{display:none}.viewer-adjust39{display:none}.viewer-adjust39.on{display:block;padding:9px;border:1px solid rgba(39,113,153,.16);border-radius:7px;background:#edf5f8}.viewer-adjust39 label{display:grid;grid-template-columns:70px 1fr 32px;gap:7px;margin:6px 0;font-size:9px}.drop .image-stage>img{transform-origin:center center}}
+
+/* v3.9.1 · Harmonized OPTIC palette: graphite-blue + restrained cyan accent */
+@media(min-width:821px){
+.viewer{background:linear-gradient(180deg,#eef3f5,#e7edef)!important;border-color:#c7d1d6!important}
+.viewer-pro39{background:linear-gradient(180deg,#17313f,#132b38)!important;border-color:#294957!important;color:#eaf1f4!important;box-shadow:0 1px 0 rgba(255,255,255,.04) inset!important}
+.viewer-pro39 .meta39{color:#8fa7b2!important}.viewer-pro39 .meta39 strong{color:#edf3f5!important}
+.viewer-pro39 button{color:#aebfc7!important}.viewer-pro39 button:hover{background:#254553!important;border-color:#3d5f6d!important;color:#fff!important}.viewer-pro39 button.active{background:#28677b!important;border-color:#4b8ca0!important;color:#fff!important}.viewer-pro39 .sep39{background:#36515e!important}
+.viewer-adjust39{background:rgba(20,43,55,.98)!important;border-color:#405d69!important;color:#e9f0f3!important;box-shadow:0 14px 34px rgba(18,35,43,.22)!important}.viewer-adjust39 label{color:#9eb0b8!important}.viewer-adjust39 output{color:#eef4f6!important}.viewer-adjust39 input{accent-color:#4f91a6!important}
+.drop{background:#101b21!important;border-color:#7d929c!important}.drop .image-stage{background:#101b21!important}.drop:before{background:rgba(18,42,53,.72)!important;color:#b4c5cc!important}
+.chat{background:#edf2f4!important;border-color:#c5d0d5!important}
+.analysis-head38{background:linear-gradient(180deg,#17313f,#132b38)!important;border-bottom-color:#314e5b!important;color:#f0f4f6!important}.analysis-head38 h2{color:#f4f7f8!important}.analysis-head38 .sub{color:#a9bac1!important}.analysis-status38{color:#a8d2dc!important}.analysis-status38:before{background:#5fa5b6!important}
+.analysis-scroll38{background:linear-gradient(180deg,#f7f9fa,#f0f4f5)!important}
+.analysis-compose38{background:#e7edef!important;border-top-color:#c7d2d7!important}.analysis-compose38 .prompt{background:#fff!important;border-color:#c9d4d9!important;color:#243640!important}.analysis-compose38 .primary{background:linear-gradient(90deg,#286b83,#2d8299)!important;border-color:#347f95!important;color:#fff!important;box-shadow:none!important}
+.quick-tool{background:#f9fbfb!important;border-color:#d0dadd!important;color:#314851!important}
+.annotate-bar{background:#f5f8f9!important;border-color:#ced8dc!important}
+}
+</style>
+<script id="v39-analysis-tools">
+(()=>{
+ const viewer=document.querySelector('.viewer'), drop=document.getElementById('drop'); if(!viewer||!drop||document.getElementById('viewerPro39'))return;
+ const bar=document.createElement('div');bar.className='viewer-pro39';bar.id='viewerPro39';bar.innerHTML=`<div class="meta39"><span>FUENTE <strong id="src39">ARCHIVO</strong></span><span>RES <strong id="res39">—</strong></span><span>ZOOM <strong id="zoom39">100%</strong></span><span>IMAGEN <strong id="state39">ORIGINAL</strong></span></div><div class="tools39"><button data-v39="out" title="Alejar">−</button><button data-v39="in" title="Acercar">＋</button><button data-v39="fit" title="Ajustar al visor">FIT</button><button data-v39="one" title="Vista 1:1">1:1</button><span class="sep39"></span><button data-v39="adjust" title="Ajustes de imagen">◐</button><button data-v39="rotate" title="Rotar 90°">↻</button><button data-v39="original" title="Mantener pulsado: original">O</button><span class="sep39"></span><button data-v39="mark" title="Señalar estructura">A</button><button data-v39="pointer" title="¿Qué es esto?">◎</button><button data-v39="count" title="Contador celular">●</button><span class="sep39"></span><button data-v39="reset" title="Restablecer visor">R</button><button data-v39="export" title="Exportar imagen original">⇩</button></div>`;
+ viewer.insertBefore(bar,drop);
+ const panel=document.createElement('div');panel.className='viewer-adjust39';panel.id='viewerAdjust39';panel.innerHTML=`<label>BRILLO <input data-adj39="brightness" type="range" min="50" max="160" value="100"><output>100</output></label><label>CONTRASTE <input data-adj39="contrast" type="range" min="50" max="180" value="100"><output>100</output></label><label>SATURACIÓN <input data-adj39="saturate" type="range" min="0" max="180" value="100"><output>100</output></label><label>NITIDEZ <input data-adj39="sharpness" type="range" min="0" max="40" value="0"><output>0</output></label>`;viewer.appendChild(panel);
+ const st={zoom:1,rotate:0,brightness:100,contrast:100,saturate:100,sharpness:0,original:false};
+ function img(){return document.querySelector('#imageStage img')}
+ function apply(){const im=img();if(!im)return;const f=st.original?'none':`brightness(${st.brightness}%) contrast(${st.contrast+st.sharpness*.6}%) saturate(${st.saturate}%)`;im.style.filter=f;im.style.transform=`scale(${st.zoom}) rotate(${st.rotate}deg)`;document.getElementById('zoom39').textContent=Math.round(st.zoom*100)+'%';document.getElementById('state39').textContent=(st.brightness!==100||st.contrast!==100||st.saturate!==100||st.sharpness!==0)?'AJUSTADA':'ORIGINAL';document.getElementById('src39').textContent=(window.lastSource==='microscope'?'MICROSCOPIO':'ARCHIVO'); if(im.complete&&im.naturalWidth)document.getElementById('res39').textContent=im.naturalWidth+'×'+im.naturalHeight}
+ const mo=new MutationObserver(()=>setTimeout(apply,0));mo.observe(drop,{childList:true,subtree:true});drop.addEventListener('load',apply,true);
+ bar.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const a=b.dataset.v39;if(a==='in')st.zoom=Math.min(3,st.zoom+.15);if(a==='out')st.zoom=Math.max(.5,st.zoom-.15);if(a==='fit'||a==='one')st.zoom=1;if(a==='rotate')st.rotate=(st.rotate+90)%360;if(a==='adjust'){panel.classList.toggle('on');b.classList.toggle('active',panel.classList.contains('on'));return}if(a==='reset'){Object.assign(st,{zoom:1,rotate:0,brightness:100,contrast:100,saturate:100,sharpness:0,original:false});panel.querySelectorAll('input').forEach(x=>{x.value=x.dataset.adj39==='sharpness'?0:100;x.nextElementSibling.value=x.value})}if(a==='mark')document.getElementById('markPoint')?.click();if(a==='pointer')document.getElementById('pointerToggle37')?.click();if(a==='count')document.getElementById('counterToggle37')?.click();if(a==='export'&&window.imageData){const x=document.createElement('a');x.href=window.imageData;x.download=(window.fileName||'optic-imagen.jpg').replace(/[^a-zA-Z0-9._-]/g,'_');x.click()}apply()});
+ const ob=bar.querySelector('[data-v39="original"]');ob.addEventListener('pointerdown',()=>{st.original=true;apply()});['pointerup','pointerleave','pointercancel'].forEach(ev=>ob.addEventListener(ev,()=>{st.original=false;apply()}));
+ panel.addEventListener('input',e=>{const x=e.target.closest('input');if(!x)return;st[x.dataset.adj39]=+x.value;x.nextElementSibling.value=x.value;apply()});
+ setTimeout(apply,50);
+})();
+</script>
+
+
+<style id="v434-final-unified-chassis">
+/* FINAL OVERRIDE: must remain after every legacy style block. */
+:root{--chassis:#111c22;--panel:#111c22;--bar:#162229;--line:#2c3d45;--soft:#1a282f;--text:#d8e2e6;--muted:#80939b;--accent:#4fa7b8}
+html,body{background:var(--chassis)!important}
+/* HOME: preserve the blue identity and remove the accidental dark top stripe. */
+#home.hero{background:#316f86!important}
+#home .instrument-top{background:rgba(49,111,134,.22)!important;border-bottom:1px solid rgba(235,251,253,.14)!important;color:#eef9fb!important}
+#home:before{background:linear-gradient(180deg,rgba(18,67,91,.12),rgba(17,61,82,.22))!important}
+/* WORKSPACE: one continuous chassis, including the former light header. */
+.workspace,.workspace.on{background:var(--chassis)!important;color:var(--text)!important;padding:0 12px 10px!important}
+.workspace:before{display:none!important}
+.workspace .top{height:54px!important;min-height:54px!important;flex-basis:54px!important;max-width:none!important;margin:0!important;padding:3px 12px!important;background:var(--chassis)!important;border:0!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
+.workspace .mini{width:118px!important;height:46px!important;object-fit:contain!important;object-position:left center!important;filter:none!important;opacity:.98!important}
+.workspace .top-actions{gap:6px!important}.workspace .back{background:var(--soft)!important;border:1px solid #34464e!important;color:#c0cdd2!important;border-radius:2px!important;box-shadow:none!important}.workspace .back:hover{background:#213139!important;color:#f2f7f8!important}
+.workgrid{max-width:none!important;margin:0!important;gap:1px!important;background:var(--line)!important;grid-template-columns:minmax(0,1.72fr) minmax(360px,.78fr)!important}
+.viewer,.chat{background:var(--panel)!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+.viewer{padding:0!important}.chat{display:flex!important;flex-direction:column!important}
+.viewer-pro39{height:40px!important;margin:0!important;background:var(--bar)!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;color:var(--text)!important}
+.viewer-pro39 .meta39{color:var(--muted)!important}.viewer-pro39 .meta39 strong{color:var(--text)!important}.viewer-pro39 .sep39{background:#34464e!important}.viewer-pro39 button{background:transparent!important;color:#91a5ad!important;border-color:transparent!important}.viewer-pro39 button:hover{background:#203139!important;color:#edf5f7!important}.viewer-pro39 button.active{background:#1b3944!important;border-color:#315865!important;color:#bfeaf3!important}
+.drop,.drop .image-stage{margin:0!important;border:0!important;border-radius:0!important;background:#0f191e!important;box-shadow:none!important}.drop{border-bottom:1px solid var(--line)!important}
+.analysis-head38{padding:11px 13px 10px!important;background:var(--bar)!important;border:0!important;border-bottom:1px solid var(--line)!important;color:var(--text)!important}.analysis-head38:after{display:none!important}.analysis-head38 h2{color:#edf4f6!important}.analysis-head38 .sub{color:var(--muted)!important}.analysis-status38{color:#8bc6d2!important}.analysis-status38:before{background:var(--accent)!important;box-shadow:0 0 5px rgba(79,167,184,.3)!important}
+.analysis-scroll38{background:var(--panel)!important;color:#c8d4d8!important;padding:12px!important;scrollbar-color:#3d515a var(--panel)!important}.analysis-scroll38:has(.response:empty):before{display:none!important}.analysis-scroll38:has(.response:empty):after{color:#61747c!important}
+.quick-tools{gap:5px!important}.quick-tool{background:var(--soft)!important;border:1px solid #31434b!important;color:#a7b6bc!important;border-radius:1px!important;box-shadow:none!important}.quick-tool:hover{background:#203139!important;border-color:#46616c!important;color:#e5eef1!important}
+.response{background:#152228!important;border:1px solid #30424a!important;color:#cbd7db!important;border-radius:1px!important;box-shadow:none!important}.response h2,.response h3,.response strong{color:#edf4f6!important}
+.analysis-compose38{background:var(--bar)!important;border:0!important;border-top:1px solid var(--line)!important;box-shadow:none!important}.analysis-compose38 .prompt{background:#101a1f!important;border:1px solid #34474f!important;color:#d7e2e6!important;border-radius:1px!important;box-shadow:none!important}.analysis-compose38 .prompt::placeholder{color:#657982!important}.analysis-compose38 .prompt:focus{border-color:#4d7b89!important;box-shadow:inset 2px 0 0 var(--accent)!important}.analysis-compose38 .primary{background:#1d5667!important;border:1px solid #356c7b!important;color:#edf8fa!important;border-radius:1px!important;box-shadow:none!important}
+.viewer-adjust39,.annotate-bar,.gallery-wrap,.session-tools37,.counter37{background:var(--bar)!important;border-color:#30424a!important;color:#aebdc4!important;border-radius:0!important;box-shadow:none!important}.annotate-bar button,.session-tools37 button,.counter37 button{background:var(--soft)!important;border-color:#34474f!important;color:#b9c7cc!important;border-radius:1px!important}
+.brand-footer{background:var(--chassis)!important;border-top:1px solid var(--line)!important;color:#758a93!important;box-shadow:none!important}.brand-footer .line{background:var(--line)!important}.brand-footer b,.brand-footer strong{color:#9fb0b7!important}
+@media(max-width:820px){.workspace,.workspace.on,.workspace .top,.viewer,.chat,.analysis-scroll38{background:var(--chassis)!important}.workspace .top{border-bottom:1px solid var(--line)!important}.workspace .mini{content:url('assets/optic-logo-transparent.png')!important}.analysis-compose38{background:var(--bar)!important}}
+</style>
+
+<style id="v435-pro-home-final">
+/* v4.3.5 — final home polish: continuous blue chassis, no dark top strip */
+#home.hero{margin:0!important;min-height:100vh!important;padding:44px 28px 64px!important;background:#37798f!important;border:0!important;box-shadow:none!important;}
+#home.hero:before{inset:0!important;background:radial-gradient(ellipse at 50% 28%,rgba(225,247,250,.56) 0%,rgba(149,204,216,.27) 28%,rgba(48,112,135,.05) 58%,transparent 75%),linear-gradient(180deg,#5a93a5 0%,#37798f 50%,#2f6d83 100%)!important;}
+#home .instrument-top{top:0!important;left:0!important;right:0!important;height:44px!important;margin:0!important;background:rgba(43,103,125,.20)!important;border:0!important;border-bottom:1px solid rgba(235,251,253,.13)!important;box-shadow:none!important;}
+#home .hero-inner{padding-top:20px!important;padding-bottom:28px!important;}
+#home .version-corner401{right:26px!important;bottom:28px!important;color:rgba(235,249,252,.42)!important;opacity:1!important;}
+#home .home-copyright435{position:absolute;z-index:5;left:50%;bottom:17px;transform:translateX(-50%);width:min(920px,88vw);text-align:center;color:rgba(235,249,252,.58);font:500 7.5px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;white-space:nowrap;text-shadow:0 1px 8px rgba(12,51,68,.12);pointer-events:none;}
+@media(max-width:820px){#home.hero{padding:52px 14px 78px!important}#home .home-copyright435{bottom:16px;width:88vw;white-space:normal;line-height:1.5;font-size:7px}#home .version-corner401{bottom:44px!important;right:14px!important}}
+</style>
+<!-- v4.5.5: Inicio returns to Home; Cambiar imagen replaces current study without returning Home. -->
+
+<style id="v458-visible-interactive-tools">
+.file-tools458{display:flex!important;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 9px;background:#17242a;border-bottom:1px solid #30424a;color:#aebdc4;font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;min-height:42px;position:relative;z-index:20}
+.file-tools458 .ft-label458{color:#728891;margin-right:4px}.file-tools458 button{appearance:none;border:1px solid #34474f;background:#1b2b32;color:#c8d4d8;border-radius:3px;padding:7px 10px;min-height:30px;font:650 8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;cursor:pointer}.file-tools458 button:hover{filter:brightness(1.16)}
+.file-tools458 button[data-ft458="measure"].active{border-color:#57d7ee;color:#dffaff;background:#164553}.file-tools458 button[data-ft458="calibrate"].active{border-color:#5da9ff;color:#e1efff;background:#193c5a}.file-tools458 button[data-ft458="arrow"].active{border-color:#ffbf45;color:#fff1c9;background:#4b3817}.file-tools458 button[data-ft458="roi"].active{border-color:#56d890;color:#dffff0;background:#174831}.file-tools458 button[data-ft458="contour"].active{border-color:#df79ff;color:#f7e4ff;background:#47224f}.file-tools458 button[data-ft458="cursor"].active{border-color:#8da6b0;color:#f0f6f8;background:#2a3940}.file-tools458 em{margin-left:auto;font-style:normal;color:#78b7c4;white-space:nowrap}.image-stage{position:relative!important}.file-overlay458{position:absolute;inset:0;width:100%;height:100%;z-index:30;pointer-events:none;touch-action:none}.file-overlay458.active{pointer-events:auto;cursor:crosshair}.file-overlay458.cursor{pointer-events:auto;cursor:default}.file-tools458[hidden]{display:none!important}
+.scale459{display:flex;align-items:center;gap:4px;margin-left:auto;color:#718891}.scale459 input{width:62px;height:26px;padding:0 5px;border:1px solid #34474f;background:#101a1f;color:#d7e2e6;font:600 8px ui-monospace,monospace}.scale459 b,.scale459 label{font:600 7px ui-monospace,monospace;color:#718891}.file-tools458 #selectionState459{margin-left:4px;padding:4px 6px;border:1px solid #34474f;color:#718891}.file-tools458 #selectionState459.on{border-color:#4fa7b8;color:#9de2ee;background:#17333c}@media(max-width:900px){.scale459{width:100%;margin-left:0}.file-tools458 #selectionState459{margin-left:0}}
+
+.selection-panel470{position:absolute;right:12px;top:58px;z-index:35;width:220px;max-height:42%;overflow:auto;background:rgba(13,25,31,.94);border:1px solid #344a54;border-radius:4px;box-shadow:0 10px 28px rgba(0,0,0,.28);padding:8px;color:#b9cbd2;font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace}.selection-panel470[hidden]{display:none!important}.sp-head470{display:flex;justify-content:space-between;padding:2px 3px 7px;color:#7f9ba6;letter-spacing:.12em}.sp-item470{display:grid;grid-template-columns:1fr auto auto;gap:5px;align-items:center;padding:6px;border-top:1px solid #263941}.sp-item470.active{background:#17323b}.sp-item470 button{border:1px solid #38505a;background:#17272e;color:#bcd0d7;border-radius:2px;padding:3px 5px;font:600 8px ui-monospace,monospace;cursor:pointer}.sp-help470{border-top:1px solid #263941;margin-top:5px;padding:7px 3px 2px;color:#607b85;line-height:1.4}.viewer{position:relative!important}
+</style>
+<script id="v458-interactive-tools">
+(()=>{const tools=document.getElementById('fileTools458'),drop=document.getElementById('drop'),status=document.getElementById('ftStatus458'),selState=document.getElementById('selectionState459'),scale=document.getElementById('scaleValue459'),scaleUnit=document.getElementById('scaleUnit459');if(!tools||!drop)return;let mode='cursor',start=null,preview=null,freehand=null,roiDraft=null,dragNode=null,items=[],activeSelection=null,activeItem=null,nextId=1;const panel=document.getElementById('selectionPanel470'),list=document.getElementById('selectionList470'),count=document.getElementById('selectionCount470');
+const COLORS={measure:'#57d7ee',calibrate:'#5da9ff',arrow:'#ffbf45',roi:'#56d890',contour:'#df79ff'};
+function stage(){return document.getElementById('imageStage')} function modality(){return window.currentModality44||currentModality44||'auto'} function isMicro(){return modality()==='microscopy'}
+function syncScale(){const micro=isMicro();scale.placeholder=micro?'µm/px':'mm/px';scaleUnit.textContent=micro?'µm/px':'mm/px';draw()}
+function ensure(){const st=stage();if(!st)return null;let c=st.querySelector('#fileOverlay458');if(!c){c=document.createElement('canvas');c.id='fileOverlay458';c.className='file-overlay458 cursor';st.appendChild(c)}const r=st.getBoundingClientRect(),d=Math.max(1,window.devicePixelRatio||1),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h;draw()}c.style.width=r.width+'px';c.style.height=r.height+'px';return c}
+function pt(e,c){const r=c.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height;return{x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy}}
+function arrow(ctx,a,b,c){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();const ang=Math.atan2(b.y-a.y,b.x-a.x),L=Math.max(18,c.width*.025);ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x-L*Math.cos(ang-.45),b.y-L*Math.sin(ang-.45));ctx.lineTo(b.x-L*Math.cos(ang+.45),b.y-L*Math.sin(ang+.45));ctx.closePath();ctx.fill()}
+function measureText(o){const px=Math.hypot(o.b.x-o.a.x,o.b.y-o.a.y),v=parseFloat(scale.value),unit=isMicro()?'µm':'mm';return v>0?(px*v).toFixed(px*v<10?2:1)+' '+unit:'— '+unit+' · CALIBRAR'}
+function path(ctx,pts,close=true){if(!pts||pts.length<2)return;ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));if(close)ctx.closePath();ctx.stroke();if(close){ctx.save();ctx.globalAlpha=.10;ctx.fill();ctx.restore()}}
+function draw(){const c=document.getElementById('fileOverlay458');if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.lineWidth=Math.max(2.2,c.width/650);x.font=`600 ${Math.max(13,c.width/70)}px ui-monospace,monospace`;items.forEach(o=>{x.save();x.strokeStyle=x.fillStyle=COLORS[o.type]||'#d9edf2';if(o===activeItem){x.shadowColor=COLORS[o.type]||'#fff';x.shadowBlur=10;x.lineWidth=Math.max(3.2,c.width/560)}x.setLineDash(o.type==='roi'?[8,6]:[]);if(o.type==='measure'){x.beginPath();x.moveTo(o.a.x,o.a.y);x.lineTo(o.b.x,o.b.y);x.stroke();x.setLineDash([]);x.fillText(measureText(o),(o.a.x+o.b.x)/2+8,(o.a.y+o.b.y)/2-8)}else if(o.type==='arrow')arrow(x,o.a,o.b,c);else if(o.type==='roi'){path(x,o.points,true);x.setLineDash([]);for(const p of o.points){x.beginPath();x.arc(p.x,p.y,Math.max(5,c.width/180),0,Math.PI*2);x.fill();}}else if(o.type==='contour')path(x,o.points,true);x.setLineDash([]);x.restore()});if(mode==='roi'&&roiDraft?.length){x.strokeStyle=x.fillStyle=COLORS.roi;x.setLineDash([8,6]);path(x,roiDraft,false);if(preview){x.beginPath();x.moveTo(roiDraft[roiDraft.length-1].x,roiDraft[roiDraft.length-1].y);x.lineTo(preview.x,preview.y);x.stroke()}x.setLineDash([]);for(const p of roiDraft){x.beginPath();x.arc(p.x,p.y,Math.max(5,c.width/180),0,Math.PI*2);x.fill();}}else if(mode==='contour'&&freehand?.length){x.strokeStyle=x.fillStyle=COLORS.contour;path(x,freehand,false)}else if(start&&preview){x.strokeStyle=x.fillStyle=COLORS[mode]||'#d9edf2';if(mode==='arrow')arrow(x,start,preview,c);else{x.beginPath();x.moveTo(start.x,start.y);x.lineTo(preview.x,preview.y);x.stroke()}x.setLineDash([])}}
+function itemName(o){const n={measure:'MEDICIÓN',arrow:'FLECHA',roi:'ROI',contour:'CONTORNO'};return (n[o.type]||o.type.toUpperCase())+' '+o.id}
+function renderPanel(){if(!panel||!list)return;const visible=items.filter(o=>o.type!=='calibrate');panel.hidden=!visible.length;count.textContent=visible.length;list.innerHTML=visible.map(o=>`<div class="sp-item470 ${activeItem===o?'active':''}" data-id="${o.id}"><span>${itemName(o)}${o.type==='measure'?' · '+measureText(o):''}</span><button data-act="focus" title="Seleccionar">◎</button><button data-act="delete" title="Eliminar">×</button></div>`).join('')}
+function activateItem(o){activeItem=o||null;if(!o){activeSelection=null;selState.textContent='SIN SELECCIÓN';selState.classList.remove('on');renderPanel();draw();return}if(o.type==='roi'||o.type==='contour')selection(o.type,{points:o.points});else selection(o.type,{a:o.a,b:o.b});renderPanel();draw()}
+function distSeg(p,a,b){const vx=b.x-a.x,vy=b.y-a.y,wx=p.x-a.x,wy=p.y-a.y,c1=vx*wx+vy*wy;if(c1<=0)return Math.hypot(p.x-a.x,p.y-a.y);const c2=vx*vx+vy*vy;if(c2<=c1)return Math.hypot(p.x-b.x,p.y-b.y);const t=c1/c2;return Math.hypot(p.x-(a.x+t*vx),p.y-(a.y+t*vy))}
+function hitItem(q,c){const tol=Math.max(14,c.width/70);for(let k=items.length-1;k>=0;k--){const o=items[k];if(o.type==='measure'||o.type==='arrow'){if(distSeg(q,o.a,o.b)<=tol)return o}else if(o.points?.length){for(let i=0;i<o.points.length;i++){if(distSeg(q,o.points[i],o.points[(i+1)%o.points.length])<=tol)return o}}}return null}
+function selection(type,data){activeSelection={type,...data};const names={roi:'● ROI ACTIVO',arrow:'● FLECHA ACTIVA',measure:'● MEDICIÓN ACTIVA',contour:'● CONTORNO IA ACTIVO'};selState.textContent=names[type]||'● SELECCIÓN ACTIVA';selState.classList.add('on');const p=document.getElementById('prompt');if(p){if(type==='roi')p.value='¿Qué se observa específicamente dentro de la región seleccionada? Identificá la estructura o hallazgo señalado y fundamentá la respuesta con lo visible.';if(type==='arrow')p.value='¿Qué estructura o hallazgo estoy señalando con la flecha? Identificalo y explicá qué rasgos visibles sustentan la respuesta.';if(type==='contour')p.value='¿Qué estructura o hallazgo he delimitado con el contorno? Analizá prioritariamente el interior del contorno, identificalo y fundamentá la respuesta con los rasgos visibles.';if(type==='roi'||type==='arrow'||type==='contour')p.focus()}renderPanel()}
+function setMode(m){mode=m;start=preview=freehand=null;if(m!=='roi'){roiDraft=null;dragNode=null}tools.querySelectorAll('button[data-ft458]').forEach(b=>b.classList.toggle('active',b.dataset.ft458===m));const c=ensure();if(c)c.className='file-overlay458 '+(m==='cursor'?'cursor':'active');status.textContent=m==='measure'?'MEDIR · ARRASTRÁ SOBRE LA IMAGEN':m==='calibrate'?('CALIBRAR · TRAZÁ UNA DISTANCIA CONOCIDA ('+(isMicro()?'µm':'mm')+')'):m==='arrow'?'FLECHA · ARRASTRÁ PARA SEÑALAR':m==='roi'?'ROI IA · CLIC PARA AGREGAR PUNTOS · CLIC EN EL PRIMERO PARA CERRAR':m==='contour'?'CONTORNO IA · BORDEÁ LA ESTRUCTURA Y SOLTÁ PARA CERRAR':'CURSOR';syncScale()}
+tools.addEventListener('click',e=>{const b=e.target.closest('button[data-ft458]');if(!b)return;const a=b.dataset.ft458;if(a==='clear'){items=[];activeSelection=null;activeItem=null;selState.textContent='SIN SELECCIÓN';selState.classList.remove('on');draw();status.textContent='CAPA LIMPIA';setTimeout(()=>setMode('cursor'),500);return}setMode(a)});scale.addEventListener('input',draw);if(list)list.addEventListener('click',e=>{const row=e.target.closest('.sp-item470');if(!row)return;const o=items.find(x=>String(x.id)===row.dataset.id);if(!o)return;if(e.target.dataset.act==='delete'){items=items.filter(x=>x!==o);if(activeItem===o)activateItem(null);else{renderPanel();draw()}return}activateItem(o);setMode('cursor')});
+function bind(){const c=ensure();if(!c||c.dataset.bound)return;c.dataset.bound='1';
+ const near=(a,b,r=Math.max(12,c.width/90))=>Math.hypot(a.x-b.x,a.y-b.y)<=r;
+ const roiItem=()=>items.findLast?items.findLast(o=>o.type==='roi'):items.slice().reverse().find(o=>o.type==='roi');
+ c.addEventListener('pointerdown',e=>{const q=pt(e,c);if(mode==='cursor'){e.preventDefault();activateItem(hitItem(q,c));return}e.preventDefault();c.setPointerCapture(e.pointerId);
+   if(mode==='roi'){
+     const ri=roiItem();
+     if(ri?.points){const idx=ri.points.findIndex(p=>near(p,q));if(idx>=0){dragNode={item:ri,idx};return}}
+     if(!roiDraft)roiDraft=[];
+     if(roiDraft.length>=3&&near(roiDraft[0],q)){
+       const pts=roiDraft.slice();const obj={type:'roi',points:pts,id:nextId++};items.push(obj);activeItem=obj;roiDraft=null;preview=null;selection('roi',{points:pts});renderPanel();status.textContent='ROI IA ACTIVO · ARRASTRÁ LOS PUNTOS PARA AJUSTAR LA FORMA';draw();return;
+     }
+     roiDraft.push(q);preview=q;draw();return;
+   }
+   if(mode==='contour'){freehand=[q];start=null;preview=null}else{start=q;preview=q}draw()
+ });
+ c.addEventListener('pointermove',e=>{const q=pt(e,c);
+   if(mode==='roi'){
+     if(dragNode){dragNode.item.points[dragNode.idx]=q;selection('roi',{points:dragNode.item.points});draw();return}
+     if(roiDraft){preview=q;draw()}return;
+   }
+   if(mode==='contour'&&freehand){const last=freehand[freehand.length-1];if(Math.hypot(q.x-last.x,q.y-last.y)>3)freehand.push(q);draw();return}if(!start)return;preview=q;draw()
+ });
+ c.addEventListener('pointerup',e=>{
+   if(mode==='roi'){if(dragNode){dragNode=null;status.textContent='ROI IA AJUSTADO · PREGUNTÁ SOBRE LA REGIÓN DELIMITADA';draw()}return}
+   if(mode==='contour'&&freehand){if(freehand.length>=6){const pts=freehand.slice();const obj={type:'contour',points:pts,id:nextId++};items.push(obj);activeItem=obj;selection('contour',{points:pts});renderPanel();status.textContent='CONTORNO IA ACTIVO · PREGUNTÁ SOBRE LA ESTRUCTURA DELIMITADA'}freehand=null;draw();return}
+   if(!start)return;const b=pt(e,c),a=start;start=preview=null;const px=Math.hypot(b.x-a.x,b.y-a.y);if(px<5){draw();return}
+   if(mode==='calibrate'){const unit=isMicro()?'µm':'mm';const raw=window.prompt('Distancia real del segmento trazado ('+unit+'):',isMicro()?'100':'10');if(raw!==null){const real=parseFloat(String(raw).replace(',','.'));if(real>0){scale.value=(real/px).toFixed(6);status.textContent='CALIBRADO · '+real+' '+unit+' · '+scale.value+' '+unit+'/px';selState.textContent='● ESCALA CALIBRADA';selState.classList.add('on');draw();setMode('measure');return}}status.textContent='CALIBRACIÓN CANCELADA';draw();setMode('cursor');return}
+   const obj={type:mode,a,b,id:nextId++};items.push(obj);activeItem=obj;selection(mode,{a,b});renderPanel();draw()
+ });
+}
+const mo=new MutationObserver(()=>{if(stage()){tools.hidden=false;bind();setMode(mode)}else tools.hidden=true});mo.observe(drop,{childList:true,subtree:true});window.addEventListener('resize',()=>{ensure();draw()});tools.hidden=!stage();if(stage()){bind();setMode('cursor')}
+window.opticGetSelectionContext459=()=>{if(!activeSelection)return'';const t=activeSelection.type.toUpperCase();if(t==='ARROW')return `[FLECHA IA ACTIVA. La imagen enviada es un RECORTE LIMPIO de la imagen original alrededor de la punta; la flecha NO forma parte de los píxeles. La punta corresponde aproximadamente al centro del recorte. Antes de nombrar la estructura, evaluá el tejido y la arquitectura que la rodean dentro del campo disponible. Identificá la estructura central sólo si los rasgos morfológicos visibles lo sustentan; explicá esos rasgos y, si existe ambigüedad, indicá las alternativas plausibles sin forzar una identificación.]`;if(t==='ROI')return `[ROI IA ACTIVO. La imagen enviada es un RECORTE LIMPIO de la imagen original: el verde, relleno y vértices NO están incluidos. El recorte conserva un margen amplio alrededor del ROI para aportar contexto histológico/anatómico. Primero reconocé el tejido/órgano y la arquitectura circundante visibles; luego identificá la estructura seleccionada correlacionando forma, células, límites y relaciones con estructuras vecinas. Si la evidencia visual es insuficiente, explicitá la incertidumbre.]`;if(t==='CONTOUR')return `[CONTORNO IA ACTIVO. La imagen enviada es un RECORTE LIMPIO de la imagen original; el contorno violeta NO está incluido. Se conserva tejido circundante para contexto. Interpretá primero la arquitectura regional y después la estructura delimitada, fundamentando por morfología y relaciones. No fuerces una identificación cuando falten criterios.]`;return `[SELECCIÓN ACTIVA: ${t}. Analizá los píxeles originales y no interpretes anotaciones de interfaz como anatomía.]`};
+
+function cleanPointToNatural459(p,img,ov){
+  const rr=ov.getBoundingClientRect(), dprX=ov.width/rr.width, dprY=ov.height/rr.height;
+  let x=p.x/dprX, y=p.y/dprY;
+  const ew=img.clientWidth||rr.width, eh=img.clientHeight||rr.height, cx=ew/2, cy=eh/2;
+  const cs=getComputedStyle(img), tr=cs.transform;
+  if(tr&&tr!=='none'){
+    try{
+      const inv=new DOMMatrix(tr).inverse(), q=new DOMPoint(x-cx,y-cy).matrixTransform(inv);
+      x=q.x+cx; y=q.y+cy;
+    }catch(e){}
+  }
+  const nw=img.naturalWidth||ew, nh=img.naturalHeight||eh;
+  const s=Math.min(ew/nw,eh/nh), rw=nw*s, rh=nh*s, ox=(ew-rw)/2, oy=(eh-rh)/2;
+  return {x:Math.max(0,Math.min(nw,(x-ox)/s)),y:Math.max(0,Math.min(nh,(y-oy)/s))};
+}
+function cleanCrop459(img,pts,padFrac){
+  const ov=document.getElementById('fileOverlay458'); if(!ov||!pts?.length)return null;
+  const np=pts.map(p=>cleanPointToNatural459(p,img,ov)), nw=img.naturalWidth, nh=img.naturalHeight;
+  let minX=Math.min(...np.map(p=>p.x)),maxX=Math.max(...np.map(p=>p.x)),minY=Math.min(...np.map(p=>p.y)),maxY=Math.max(...np.map(p=>p.y));
+  const base=Math.max(maxX-minX,maxY-minY,Math.min(nw,nh)*.06), pad=base*(padFrac??.12);
+  minX=Math.max(0,minX-pad);minY=Math.max(0,minY-pad);maxX=Math.min(nw,maxX+pad);maxY=Math.min(nh,maxY+pad);
+  const sw=Math.max(1,maxX-minX),sh=Math.max(1,maxY-minY),c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(sw));c.height=Math.max(1,Math.round(sh));
+  c.getContext('2d').drawImage(img,minX,minY,sw,sh,0,0,c.width,c.height);
+  return c.toDataURL('image/jpeg',.96);
+}
+window.opticGetAnnotatedImage458=()=>{
+  const st=stage(),img=st&&st.querySelector('img');if(!img||!img.naturalWidth)return null;
+  if(activeSelection?.type==='roi'||activeSelection?.type==='contour')return cleanCrop459(img,activeSelection.points,.42);
+  if(activeSelection?.type==='arrow'){
+    const ov=document.getElementById('fileOverlay458'),tip=activeSelection.b;if(!ov||!tip)return null;
+    const q=cleanPointToNatural459(tip,img,ov),nw=img.naturalWidth,nh=img.naturalHeight;
+    const half=Math.max(100,Math.min(nw,nh)*.24);
+    const x0=Math.max(0,q.x-half),y0=Math.max(0,q.y-half),x1=Math.min(nw,q.x+half),y1=Math.min(nh,q.y+half);
+    const c=document.createElement('canvas');c.width=Math.max(1,Math.round(x1-x0));c.height=Math.max(1,Math.round(y1-y0));
+    c.getContext('2d').drawImage(img,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);
+    return c.toDataURL('image/jpeg',.96);
+  }
+  const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return c.toDataURL('image/jpeg',.96);
+};window.opticSyncScale459=syncScale;
+})();
+</script>
+
+
+<style id="v461-fixes">
+/* v4.6.1: analysis viewer never becomes a drop target. Image replacement is only via Cambiar imagen. */
+#drop.drag381:after{display:none!important;content:none!important}
+#drop .image-stage>img{-webkit-user-drag:none!important;user-select:none!important;-webkit-user-select:none!important}
+.scale459 input.calibrated461{border-color:#4fa7b8!important;color:#9de2ee!important;background:#17333c!important}
+</style>
+<script id="v461-fixes-js">
+(()=>{
+ const drop=document.getElementById('drop'), scale=document.getElementById('scaleValue459'), unit=document.getElementById('scaleUnit459'), status=document.getElementById('ftStatus458');
+ if(!drop)return;
+ // Block every drag/drop gesture inside an already loaded analysis study.
+ ['dragstart','dragenter','dragover','dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{
+   if(document.getElementById('imageStage')){e.preventDefault();e.stopImmediatePropagation();drop.classList.remove('drag381');}
+ },true));
+ const lockImg=()=>{const img=drop.querySelector('.image-stage>img');if(img){img.draggable=false;img.setAttribute('draggable','false')}};
+ new MutationObserver(lockImg).observe(drop,{childList:true,subtree:true}); lockImg();
+ // Make calibration state explicit and persistent in the toolbar.
+ const refresh=()=>{if(!scale)return;const v=parseFloat(scale.value);scale.classList.toggle('calibrated461',v>0);if(v>0&&status&&/CURSOR|CALIBR|MEDIR/.test(status.textContent)){const u=(unit?.textContent||'mm/px');status.textContent='ESCALA ACTIVA · '+v+' '+u+' · MEDICIONES FÍSICAS HABILITADAS'}};
+ scale?.addEventListener('input',refresh); scale?.addEventListener('change',refresh); refresh();
+})();
+</script>
+
+<!-- OPTIC IA v4.7.0 · Multi-selection panel + individual selection/delete, built on v4.6.9 stable. -->
+</body></html>
+<style id="v344-logo-no-clip">
+/* v3.4.4 · Header logo fit fix: preserve original artwork and reserve full vertical space */
+.microscope-head{min-height:82px!important;height:82px!important;overflow:visible!important;padding-top:6px!important;padding-bottom:6px!important;align-items:center!important}
+.micro-brand341{height:70px!important;overflow:visible!important;align-items:center!important}
+.micro-darkbrand343{width:138px!important;flex:0 0 138px!important;height:70px!important;overflow:visible!important;align-items:center!important;justify-content:center!important}
+.micro-logo343{width:auto!important;height:64px!important;max-width:134px!important;max-height:64px!important;object-fit:contain!important;object-position:center!important;display:block!important;margin:0!important;transform:none!important}
+.micro-sep341{height:36px!important}
+@media(max-width:760px){.microscope-head{min-height:74px!important;height:74px!important}.micro-brand341{height:62px!important}.micro-darkbrand343{width:112px!important;flex-basis:112px!important;height:62px!important}.micro-logo343{height:56px!important;max-height:56px!important;max-width:108px!important}.micro-sep341{height:32px!important}}
+</style>
+<style id="v345-fixed-layout">
+/* v3.4.5 · Workstation vertical architecture: header/footer are protected; only the center flexes */
+.microscope-card{
+  height:min(700px,calc(100dvh - 28px))!important;
+  max-height:calc(100dvh - 28px)!important;
+  grid-template-rows:82px minmax(0,1fr) 58px!important;
+  overflow:hidden!important;
+}
+.microscope-head{
+  height:82px!important;min-height:82px!important;box-sizing:border-box!important;
+  overflow:visible!important;position:relative!important;z-index:10!important;
+}
+.micro-brand341{height:70px!important;min-height:0!important;overflow:visible!important}
+.micro-darkbrand343{height:70px!important;overflow:visible!important}
+.micro-logo343{height:62px!important;max-height:62px!important;width:auto!important;object-fit:contain!important;object-position:center!important}
+.microscope-body34{min-height:0!important;height:auto!important;overflow:hidden!important}
+.microscope-stage{min-height:0!important;height:100%!important;max-height:100%!important;overflow:hidden!important}
+.microscope-tools{height:58px!important;min-height:58px!important;box-sizing:border-box!important;overflow:hidden!important}
+/* legacy note below controls is intentionally hidden: it must not steal vertical space */
+.microscope-card>.microscope-note{display:none!important}
+@media(max-height:760px){
+ .microscope-card{height:calc(100dvh - 20px)!important;max-height:calc(100dvh - 20px)!important;grid-template-rows:76px minmax(0,1fr) 54px!important}
+ .microscope-head{height:76px!important;min-height:76px!important}
+ .micro-brand341,.micro-darkbrand343{height:64px!important}
+ .micro-logo343{height:57px!important;max-height:57px!important}
+ .microscope-tools{height:54px!important;min-height:54px!important}
+}
+</style>
+<style id="v392-light-professional">
+/* v3.9.2 — clear scientific workstation palette */
+.viewer{background:#f4f7f8!important;border-color:#cbd7dc!important;box-shadow:0 10px 30px rgba(36,65,78,.06)!important}
+.viewer-pro39{height:38px!important;background:#f9fbfc!important;border:1px solid #ccd8dd!important;color:#314b58!important;box-shadow:0 1px 2px rgba(35,61,72,.04)!important}
+.viewer-pro39 .meta39{color:#718994!important}.viewer-pro39 .meta39 strong{color:#263f4b!important}.viewer-pro39 .sep39{background:#d5dfe3!important}
+.viewer-pro39 button{color:#4d6975!important;border-color:transparent!important;background:transparent!important}.viewer-pro39 button:hover{background:#edf4f6!important;border-color:#d3e0e5!important;color:#174f67!important}.viewer-pro39 button.active{background:#e2f0f4!important;border-color:#9fc8d4!important;color:#0d6079!important;box-shadow:inset 0 0 0 1px rgba(40,128,153,.05)!important}
+.viewer-adjust39{background:rgba(249,251,252,.98)!important;border-color:#cbd8dd!important;color:#2e4651!important;box-shadow:0 14px 34px rgba(29,55,67,.14)!important}.viewer-adjust39 label{color:#617985!important}.viewer-adjust39 output{color:#28434f!important}.viewer-adjust39 input{accent-color:#2786a2!important}
+.drop{background:#fff!important;border-color:#c9d6db!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8)!important}
+.drop .image-stage:before{background:rgba(36,71,85,.78)!important;color:#f5fafb!important}
+.chat{background:#f5f8f9!important;border-color:#cbd7dc!important;box-shadow:0 10px 30px rgba(36,65,78,.06)!important}
+.analysis-head38{background:#f9fbfc!important;border-bottom:1px solid #d4dfe3!important;color:#263f4b!important;padding:14px 16px 12px!important;position:relative!important}
+.analysis-head38:after{content:"";position:absolute;left:16px;bottom:-1px;width:52px;height:2px;background:#2786a2;border-radius:2px}
+.analysis-head38 h2{color:#203c4a!important;font-size:17px!important}.analysis-head38 .sub{color:#708792!important}.analysis-status38{color:#47717f!important}.analysis-status38:before{background:#2c91ab!important;box-shadow:0 0 0 3px rgba(44,145,171,.09)!important}
+.analysis-scroll38{background:#fff!important}.analysis-scroll38::-webkit-scrollbar-thumb{background:#c7d5da!important}.analysis-scroll38{scrollbar-color:#c7d5da transparent!important}
+.analysis-compose38{background:#f2f6f7!important;border-top-color:#d3dfe3!important;box-shadow:0 -7px 18px rgba(35,65,77,.035)!important}.analysis-compose38 .prompt{background:#fff!important;border-color:#ccd9de!important;color:#263f4b!important;box-shadow:none!important}.analysis-compose38 .prompt:focus{border-color:#7fb5c5!important;box-shadow:0 0 0 3px rgba(39,134,162,.08)!important}.analysis-compose38 .primary{background:#247d98!important;border-color:#247d98!important;color:#fff!important;box-shadow:0 5px 13px rgba(36,125,152,.13)!important}.analysis-compose38 .primary:hover{background:#206f87!important}
+.quick-tool{background:#fff!important;border-color:#d1dde1!important;color:#365563!important}.quick-tool:hover{background:#f1f7f8!important;border-color:#aacbd5!important;color:#175f76!important}
+.response{background:#fff!important;border-color:#d8e2e5!important;color:#334f5b!important}.response h2,.response h3,.response strong{color:#234756!important}
+@media(max-width:820px){.viewer-pro39{background:#f9fbfc!important;color:#314b58!important;border-color:#ccd8dd!important}.viewer-pro39 .meta39{color:#718994!important}.viewer-pro39 button{background:#f4f8f9!important;border-color:#d6e1e5!important;color:#45636f!important}.viewer-pro39 button.active{background:#e2f0f4!important;border-color:#9fc8d4!important;color:#0d6079!important}}
+</style>
+<script id="v392-icon-labels">
+(()=>{const run=()=>{const b=document.getElementById('viewerPro39');if(!b)return false;const m={adjust:'☼',rotate:'↻',original:'◫',mark:'✎',pointer:'⌖',count:'●',reset:'↺',export:'⇩'};Object.entries(m).forEach(([k,v])=>{const x=b.querySelector(`[data-v39="${k}"]`);if(x)x.textContent=v});return true};if(!run()){let n=0;const t=setInterval(()=>{if(run()||++n>30)clearInterval(t)},100)}})();
+</script>
+
+<style id="v401-clean-home">
+#home .hero-inner{padding-top:34px}
+#home .pro-kicker40{margin-top:4px;margin-bottom:32px;letter-spacing:.28em}
+#home .actions{margin-top:0;gap:10px}
+#home .action{min-height:54px}
+#home .action-copy40{display:flex;align-items:center}
+#home .action-copy40 small{display:none!important}
+#home .hint{margin-top:18px;letter-spacing:.14em}
+#home .hint-sep40{display:none}
+#home .version-corner401{position:absolute;right:24px;bottom:18px;margin:0;opacity:.38;font-size:8px;letter-spacing:.18em}
+@media(max-width:700px){#home .version-corner401{right:14px;bottom:12px}}
+</style>
+
+<style id="v43-scientific-analysis-console">
+/* v4.3 — final visual authority: scientific console overrides every legacy theme */
+@media(min-width:821px){
+.workspace{background:#dfe6e9!important;padding:0 12px 10px!important}
+.workspace .top{height:48px!important;min-height:48px!important;flex-basis:48px!important;background:#e9eef0!important;border-bottom:1px solid #b8c4c9!important;padding:2px 10px!important}
+.workspace .mini{width:108px!important;height:42px!important}.back{background:#e9eef0!important;border:1px solid #b7c4c9!important;border-radius:2px!important;color:#344851!important;box-shadow:none!important}
+.workgrid{margin-top:6px!important;gap:6px!important;grid-template-columns:minmax(0,1.72fr) minmax(360px,.78fr)!important}
+.viewer,.chat{border:1px solid #71828a!important;border-radius:2px!important;box-shadow:0 4px 14px rgba(13,28,35,.12)!important;overflow:hidden!important}
+.viewer{background:#0c1519!important;padding:0!important}.viewer-pro39{height:38px!important;margin:0!important;border:0!important;border-bottom:1px solid #314149!important;border-radius:0!important;background:#152127!important;color:#d8e1e4!important;box-shadow:none!important}.viewer-pro39 .meta39{color:#80939c!important}.viewer-pro39 .meta39 strong{color:#dce6e9!important}.viewer-pro39 .sep39{background:#3a4a51!important}.viewer-pro39 button{color:#9fb0b7!important;background:transparent!important;border-radius:1px!important}.viewer-pro39 button:hover{background:#22343c!important;color:#fff!important}.viewer-pro39 button.active{background:#174c5c!important;border-color:#2c7388!important;color:#e9fbff!important}
+.drop{margin:0!important;border:0!important;border-radius:0!important;background:#0a1317!important;box-shadow:none!important}.drop .image-stage{background:#0a1317!important}.drop .image-stage:after{content:'RGB  ·  ORIGINAL  ·  ZOOM 100%  ·  ROI OFF';position:absolute;right:10px;bottom:8px;padding:4px 7px;border:1px solid #33454d;background:rgba(10,20,24,.82);color:#81969f;font:600 7px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+.chat{background:#111b20!important;display:flex!important;flex-direction:column!important}
+.analysis-head38{padding:11px 13px 9px!important;background:#17242a!important;border:0!important;border-bottom:1px solid #34464e!important;color:#e6eef1!important}.analysis-head38:after{display:none!important}.analysis-head38 h2{margin:0!important;color:#edf4f6!important;font:650 11px ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.12em!important;text-transform:uppercase!important}.analysis-head38 .sub{margin-top:4px!important;color:#728891!important;font:600 7px ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.12em!important}.analysis-status38{margin-top:8px!important;color:#78c9d9!important;font-size:7.5px!important}.analysis-status38:before{background:#4fc0d3!important;box-shadow:0 0 7px rgba(79,192,211,.55)!important}
+.analysis-scroll38{position:relative!important;padding:12px!important;background:#101a1f!important;color:#c9d5d9!important;scrollbar-color:#465b64 #101a1f!important}.analysis-scroll38:has(.response:empty):before{content:'OPTIC';display:block;text-align:center;margin-top:54px;color:#22333a;font:700 42px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.22em}.analysis-scroll38:has(.response:empty):after{content:'SELECT AN ANALYSIS MODE';display:block;text-align:center;margin:8px 0 24px;color:#526871;font:600 7px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em}
+.quick-tools{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;position:relative!important;z-index:2!important;margin:0!important}.quick-tool{min-height:38px!important;padding:7px 8px!important;border:1px solid #34474f!important;border-radius:1px!important;background:#18262c!important;color:#9fb1b8!important;font:600 7.5px ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.08em!important;text-transform:uppercase!important;box-shadow:none!important}.quick-tool:hover{background:#20343d!important;border-color:#3f7889!important;color:#dff8ff!important}
+.response{margin-top:8px!important;padding:13px!important;border:1px solid #34474f!important;border-radius:1px!important;background:#152228!important;color:#cbd7db!important;box-shadow:none!important;font-size:12px!important;line-height:1.55!important}.response:empty{display:none!important}.response h2,.response h3{color:#e8f2f5!important;border-bottom:1px solid #30434b!important;padding-bottom:6px!important}.response strong{color:#eef7fa!important}
+.analysis-compose38{display:grid!important;grid-template-columns:minmax(0,1fr) 92px!important;gap:6px!important;align-items:stretch!important;padding:8px!important;background:#17242a!important;border:0!important;border-top:1px solid #34464e!important;box-shadow:none!important}.analysis-compose38 .prompt{min-height:42px!important;max-height:76px!important;margin:0!important;padding:11px 12px!important;border:1px solid #3b4e56!important;border-radius:1px!important;background:#0e181d!important;color:#dbe6e9!important;font:500 10px ui-monospace,SFMono-Regular,Menlo,monospace!important;box-shadow:none!important}.analysis-compose38 .prompt::placeholder{color:#61767f!important}.analysis-compose38 .prompt:focus{border-color:#4a91a5!important;box-shadow:inset 2px 0 0 #45a8bf!important;outline:none!important}.analysis-compose38 .primary{height:auto!important;min-height:42px!important;margin:0!important;padding:0 10px!important;border:1px solid #347c90!important;border-radius:1px!important;background:#1a6074!important;color:#effcff!important;box-shadow:none!important;font:700 8px ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.11em!important}.analysis-compose38 .primary:hover{background:#20758c!important}
+.viewer-adjust39{background:#17252b!important;border-color:#3b515a!important;color:#dbe5e8!important;border-radius:1px!important}.viewer-adjust39 label,.viewer-adjust39 output{color:#9fb0b7!important}
+}
+</style>
+
+<!-- OPTIC IA v4.6.5 · Zoom-Safe Coordinates -->
+<style id="v465-zoom-safe-css">
+/* Keep the annotation layer in the exact same visual transform as the study image. */
+#imageStage #fileOverlay458{transform-origin:center center!important;will-change:transform}
+</style>
+<script id="v465-zoom-safe-js">
+(()=>{
+  let observedImg=null, observer=null;
+  function syncOverlayTransform(){
+    const st=document.getElementById('imageStage');
+    const img=st&&st.querySelector('img');
+    const ov=st&&st.querySelector('#fileOverlay458');
+    if(!img||!ov)return;
+    // The viewer applies zoom/rotation to the image with CSS transform.
+    // Apply the identical transform to the overlay. Because pointer mapping
+    // uses the transformed canvas bounding rect, zoom is automatically
+    // inverted back into stable canvas/image coordinates.
+    ov.style.transform=img.style.transform||'none';
+    ov.style.transformOrigin=img.style.transformOrigin||'center center';
+    if(img!==observedImg){
+      if(observer)observer.disconnect();
+      observedImg=img;
+      observer=new MutationObserver(syncOverlayTransform);
+      observer.observe(img,{attributes:true,attributeFilter:['style','class']});
+    }
+  }
+  const root=document.getElementById('drop')||document.body;
+  new MutationObserver(()=>requestAnimationFrame(syncOverlayTransform)).observe(root,{childList:true,subtree:true});
+  window.addEventListener('resize',()=>requestAnimationFrame(syncOverlayTransform));
+  document.addEventListener('click',()=>requestAnimationFrame(syncOverlayTransform),true);
+  setInterval(syncOverlayTransform,350);
+  syncOverlayTransform();
+})();
+</script>
+
+<style id="v474-transparent-logo-final">
+/* v4.7.4 — dark upper application bar with transparent logo; preserve v4.7.3 layout and functionality */
+@media(min-width:821px){
+.workspace{background:#111a1f!important;}
+.workspace .top{
+  background:#152229!important;
+  border-bottom:1px solid #34464e!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.18)!important;
+}
+.workspace .mini{
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  padding:0!important;
+  width:108px!important;
+  height:38px!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))!important;
+}
+.workspace .top-actions{gap:6px!important;}
+.workspace .back{
+  background:#1b2a31!important;
+  border:1px solid #40535c!important;
+  color:#d7e2e6!important;
+  box-shadow:none!important;
+}
+.workspace .back:hover{
+  background:#24363e!important;
+  border-color:#55707b!important;
+  color:#fff!important;
+}
+}
+@media(max-width:820px){
+.workspace .top{background:#152229!important;border-bottom-color:#34464e!important;}
+.workspace .back{background:#1b2a31!important;border-color:#40535c!important;color:#d7e2e6!important;}
+}
+</style>
+
+<style id="optic-v475-dark-logo">
+.workspace .mini{
+  content:url('assets/optic-logo-dark-header.png') !important;
+  width:118px !important;
+  height:46px !important;
+  object-fit:contain !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+@media(max-width:820px){
+  .workspace .mini{content:url('assets/optic-logo-dark-header.png') !important;}
+}
+</style>
+
+<style id="optic-v477-header-color-fix">
+/* Match the real header surface to the dark field embedded in the adapted logo. */
+.workspace .top {
+  background: #1e2b33 !important;
+  background-color: #1e2b33 !important;
+  border-bottom: 1px solid #34464e !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18) !important;
+}
+.workspace .mini {
+  background: transparent !important;
+}
+@media(max-width:820px) {
+  .workspace .top {
+    background: #1e2b33 !important;
+    background-color: #1e2b33 !important;
+  }
+}
+</style>
+
+<style id="optic-v478-true-transparent-logo">
+.workspace .top{
+  background:#16252d !important;
+  background-color:#16252d !important;
+  background-image:none !important;
+}
+.workspace .mini{
+  content:url('assets/optic-logo-dark-header.png') !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+</style>
+
+<style id="optic-v479-clean-logo">
+.workspace .top{
+  background:#18252d !important;
+  background-color:#18252d !important;
+  background-image:none !important;
+}
+.workspace .mini{
+  content:url('assets/optic-logo-dark-clean.png') !important;
+  width:118px !important;
+  height:46px !important;
+  object-fit:contain !important;
+  object-position:left center !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+</style>
+
+<style id="optic-v480-intro-style">
+.optic-intro{
+  position:fixed; inset:0; z-index:999999;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; background:
+    radial-gradient(circle at 50% 44%, rgba(22,112,137,.18) 0%, rgba(16,43,54,.10) 30%, rgba(7,18,24,0) 58%),
+    linear-gradient(145deg,#071118 0%,#0b1a22 48%,#102a34 100%);
+  opacity:1; visibility:visible;
+}
+.optic-intro::before{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(67,211,235,.07) 49%,transparent 52%);
+  transform:translateX(-110%); animation:opticIntroSweep 1.15s ease 1.65s forwards;
+}
+.optic-intro-stage{
+  width:min(680px,78vw); text-align:center; position:relative;
+  transform:translateY(10px) scale(.975); opacity:0;
+  animation:opticIntroStage 1s cubic-bezier(.2,.75,.2,1) .22s forwards;
+}
+.optic-intro-logo{
+  display:block; width:min(590px,72vw); max-height:56vh; object-fit:contain;
+  margin:0 auto; filter:drop-shadow(0 18px 38px rgba(0,0,0,.30));
+}
+.optic-intro-subtitle{
+  margin-top:12px; color:#a8c0ca; font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.28em; opacity:0; animation:opticIntroText .65s ease 1.08s forwards;
+}
+.optic-intro-line{
+  width:0; height:1px; margin:18px auto 0; background:linear-gradient(90deg,transparent,#4ed4e8,transparent);
+  box-shadow:0 0 16px rgba(78,212,232,.32); animation:opticIntroLine .72s ease 1.38s forwards;
+}
+.optic-intro-glow{
+  position:absolute; width:420px; height:420px; border-radius:50%;
+  background:rgba(38,174,199,.08); filter:blur(75px);
+  animation:opticIntroGlow 2.6s ease-in-out .25s both;
+}
+.optic-intro.optic-intro-exit{
+  animation:opticIntroExit .68s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes opticIntroStage{to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes opticIntroText{to{opacity:.92}}
+@keyframes opticIntroLine{to{width:min(430px,54vw)}}
+@keyframes opticIntroSweep{to{transform:translateX(110%)}}
+@keyframes opticIntroGlow{0%{opacity:0;transform:scale(.8)}45%{opacity:1}100%{opacity:.5;transform:scale(1.18)}}
+@keyframes opticIntroExit{0%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+@media (prefers-reduced-motion:reduce){
+  .optic-intro-stage,.optic-intro-subtitle,.optic-intro-line,.optic-intro-glow,.optic-intro::before{animation:none!important;opacity:1}
+}
+</style>
+<script id="optic-v480-intro-script">
+(function(){
+  var intro=document.getElementById('opticIntro');
+  if(!intro) return;
+  var introAudio=new Audio('assets/optic-intro-sound.wav');
+  introAudio.preload='auto';
+  introAudio.volume=0.42;
+  var key='opticIntroPlayed_v481';
+  try{
+    if(sessionStorage.getItem(key)==='1'){
+      intro.remove();
+      return;
+    }
+    sessionStorage.setItem(key,'1');
+  }catch(e){}
+  try{
+    var playPromise=introAudio.play();
+    if(playPromise && typeof playPromise.catch==='function') playPromise.catch(function(){});
+  }catch(e){}
+  window.setTimeout(function(){
+    if(!intro) return;
+    intro.classList.add('optic-intro-exit');
+    window.setTimeout(function(){ if(intro && intro.parentNode) intro.parentNode.removeChild(intro); },720);
+      try{ introAudio.pause(); introAudio.currentTime=0; }catch(e){}
+  },3500);
+})();
+</script>
+
+<style id="optic-v482-dark-logo-fix">
+#opticIntro .optic-intro-logo{
+  opacity:1 !important;
+  filter:drop-shadow(0 18px 42px rgba(0,0,0,.38)) !important;
+}
+#opticIntro .optic-intro-stage{
+  width:min(720px,82vw) !important;
+}
+#opticIntro .optic-intro-logo{
+  width:min(630px,76vw) !important;
+}
+</style>
+
+<style id="optic-v483-rebuilt-intro">
+#opticIntro{
+  background:#050b12 !important;
+}
+#opticIntro .optic-intro-stage{
+  width:min(960px,88vw) !important;
+}
+#opticIntro .optic-intro-logo{
+  width:min(900px,84vw) !important;
+  max-height:72vh !important;
+  object-fit:contain !important;
+  border-radius:18px !important;
+  filter:drop-shadow(0 24px 54px rgba(0,0,0,.48)) !important;
+}
+#opticIntro .optic-intro-subtitle{
+  display:none !important;
+}
+</style>
+
+<style id="optic-v484-seamless-intro">
+/* v4.8.4: full-bleed intro. Removes visible lateral image cuts/card edges. */
+#opticIntro{
+  background:#020810 !important;
+  overflow:hidden !important;
+}
+#opticIntro .optic-intro-stage{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+}
+#opticIntro .optic-intro-logo{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  filter:none !important;
+  transform:scale(1.035) !important;
+}
+#opticIntro .optic-intro-stage::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  background:
+    radial-gradient(ellipse at center,
+      rgba(0,0,0,0) 45%,
+      rgba(1,8,15,.10) 68%,
+      rgba(1,7,13,.40) 100%) !important;
+}
+#opticIntro .optic-intro-subtitle,
+#opticIntro .optic-intro-line{
+  display:none !important;
+}
+</style>
+
+<style id="optic-v485-graphite-intro">
+#opticIntro{
+  background:
+    radial-gradient(ellipse at 50% 46%, #20272d 0%, #11171c 48%, #080c10 100%) !important;
+}
+#opticIntro .optic-intro-stage{
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:transparent !important;
+}
+#opticIntro .optic-intro-logo{
+  position:relative !important;
+  inset:auto !important;
+  width:min(720px,68vw) !important;
+  height:auto !important;
+  max-width:720px !important;
+  max-height:68vh !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  transform:none !important;
+  border-radius:0 !important;
+  opacity:.94 !important;
+  mix-blend-mode:screen !important;
+  filter:contrast(.98) brightness(.93) drop-shadow(0 22px 46px rgba(0,0,0,.30)) !important;
+  -webkit-mask-image:radial-gradient(ellipse at center, #000 45%, rgba(0,0,0,.92) 62%, transparent 82%) !important;
+  mask-image:radial-gradient(ellipse at center, #000 45%, rgba(0,0,0,.92) 62%, transparent 82%) !important;
+}
+#opticIntro .optic-intro-stage::after{
+  background:
+    radial-gradient(ellipse at center,
+      rgba(255,255,255,.025) 0%,
+      rgba(255,255,255,0) 43%,
+      rgba(0,0,0,.18) 72%,
+      rgba(0,0,0,.48) 100%) !important;
+}
+#opticIntro::before{
+  background:linear-gradient(90deg,transparent 0%,rgba(220,230,236,.055) 49%,transparent 52%) !important;
+}
+#opticIntro .optic-intro-glow{
+  background:rgba(205,218,226,.045) !important;
+}
+</style>
+
+<style id="optic-v486-true-alpha-intro">
+#opticIntro{
+  background:
+    radial-gradient(ellipse at 50% 44%, #1b2228 0%, #11171c 42%, #080d11 72%, #05080b 100%) !important;
+  overflow:hidden !important;
+}
+#opticIntro::before{
+  background:none !important;
+  animation:none !important;
+}
+#opticIntro .optic-intro-glow{
+  display:block !important;
+  width:min(520px,52vw) !important;
+  height:min(520px,52vw) !important;
+  background:radial-gradient(circle,rgba(210,220,226,.055) 0%,rgba(160,174,183,.025) 40%,transparent 72%) !important;
+  filter:blur(28px) !important;
+}
+#opticIntro .optic-intro-stage{
+  position:relative !important;
+  inset:auto !important;
+  width:min(650px,64vw) !important;
+  height:auto !important;
+  max-width:650px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:visible !important;
+  background:transparent !important;
+}
+#opticIntro .optic-intro-logo{
+  position:relative !important;
+  inset:auto !important;
+  display:block !important;
+  width:min(590px,58vw) !important;
+  height:auto !important;
+  max-width:590px !important;
+  max-height:58vh !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  margin:0 auto !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  mix-blend-mode:normal !important;
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
+  filter:drop-shadow(0 18px 34px rgba(0,0,0,.34)) !important;
+  transform:none !important;
+  opacity:.97 !important;
+}
+#opticIntro .optic-intro-stage::after{
+  display:none !important;
+  content:none !important;
+  background:none !important;
+}
+#opticIntro .optic-intro-subtitle{
+  display:none !important;
+}
+#opticIntro .optic-intro-line{
+  display:none !important;
+}
+</style>
+
+<style id="optic-v487-vector-typography-intro">
+#opticIntro{background:radial-gradient(ellipse at 50% 43%,#1b2228 0%,#10161b 43%,#080d11 72%,#05080b 100%)!important}
+#opticIntro::before{display:none!important}
+#opticIntro .optic-intro-glow{display:block!important;position:absolute!important;width:min(480px,48vw)!important;height:min(480px,48vw)!important;background:radial-gradient(circle,rgba(222,229,233,.055),rgba(160,174,183,.018) 44%,transparent 72%)!important;filter:blur(30px)!important}
+#opticIntro .optic487-stage{position:relative!important;inset:auto!important;width:min(620px,72vw)!important;height:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center!important;background:transparent!important;overflow:visible!important;opacity:0;transform:translateY(8px) scale(.985);animation:optic487Stage .9s cubic-bezier(.2,.75,.2,1) .18s forwards!important}
+.optic487-eye{display:block;width:min(305px,35vw);height:auto;object-fit:contain;margin:0 auto 16px;filter:drop-shadow(0 15px 28px rgba(0,0,0,.30));opacity:0;transform:scale(.96);animation:optic487Eye .85s ease .28s forwards}
+.optic487-brand{display:flex;align-items:baseline;justify-content:center;gap:.11em;margin:0;color:#e9edf0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:clamp(46px,6vw,76px);font-weight:200;line-height:.95;letter-spacing:.105em;white-space:nowrap;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;opacity:0;animation:optic487Reveal .7s ease .72s forwards}
+.optic487-brand .optic487-ia{color:#d4dde2;font-weight:200;letter-spacing:.035em}
+.optic487-medhub{width:min(430px,58vw);display:flex;align-items:center;gap:18px;margin-top:15px;color:#c9d0d4;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:clamp(15px,1.7vw,21px);font-weight:300;letter-spacing:.22em;opacity:0;animation:optic487Reveal .65s ease 1.02s forwards}
+.optic487-medhub i{height:1px;flex:1;background:rgba(220,228,232,.58)} .optic487-medhub span{white-space:nowrap}
+.optic487-author{margin-top:17px;color:#c5ccd0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:clamp(10px,1.05vw,13px);font-weight:400;letter-spacing:.29em;white-space:nowrap;opacity:0;animation:optic487Reveal .6s ease 1.30s forwards}
+.optic487-tagline{margin-top:14px;color:#8f9ba1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:clamp(7px,.72vw,9px);font-weight:600;letter-spacing:.31em;white-space:nowrap;opacity:0;animation:optic487Reveal .6s ease 1.52s forwards}
+#opticIntro .optic-intro-subtitle,#opticIntro .optic-intro-line,#opticIntro .optic-intro-logo{display:none!important}
+@keyframes optic487Stage{to{opacity:1;transform:none}} @keyframes optic487Eye{to{opacity:1;transform:scale(1)}} @keyframes optic487Reveal{to{opacity:1}}
+@media(max-width:680px){#opticIntro .optic487-stage{width:86vw!important}.optic487-eye{width:min(260px,48vw)}.optic487-author{letter-spacing:.19em}.optic487-tagline{letter-spacing:.18em}}
+@media(prefers-reduced-motion:reduce){#opticIntro .optic487-stage,.optic487-eye,.optic487-brand,.optic487-medhub,.optic487-author,.optic487-tagline{animation:none!important;opacity:1!important;transform:none!important}}
+</style>
+
+<style id="optic-v488-no-eye">
+#opticIntro .optic487-eye{display:none!important}
+#opticIntro .optic487-brand{margin-top:0!important}
+</style>
+
+<style id="optic-v4892-roi-clean-visual">
+/* ROI/contour remain an interface overlay only; AI receives clean original pixels. */
+</style>
+<style id="v48912-analysis-animation">
+.optic-thinking48912{display:flex;align-items:center;gap:11px;padding:11px 13px;margin:4px 0 10px;border:1px solid rgba(116,161,178,.22);border-radius:8px;background:linear-gradient(180deg,rgba(18,31,39,.78),rgba(12,23,30,.62));color:#b9ccd4;min-height:56px;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.optic-orbit48912{position:relative;width:30px;height:30px;flex:0 0 30px;border:1px solid rgba(113,158,176,.35);border-radius:50%;background:rgba(28,60,72,.12)}
+.optic-orbit48912:before{content:"";position:absolute;inset:6px;border:2px solid transparent;border-top-color:#5d9eb2;border-right-color:#5d9eb2;border-radius:50%;animation:opticSpin48912 1s linear infinite}
+.optic-orbit48912:after{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#6aa8ba;box-shadow:0 0 0 4px rgba(79,143,162,.09)}
+.optic-thinking48912 strong{display:block;font-size:11px;letter-spacing:.08em;color:#b8cbd3;margin-bottom:4px}.optic-thinking48912 span{display:block;font-size:11px;color:#718a94;line-height:1.35}.optic-dots48912 i{display:inline-block;width:4px;height:4px;margin-left:3px;border-radius:50%;background:#6aa8ba;animation:opticDot48912 1.1s infinite ease-in-out}.optic-dots48912 i:nth-child(2){animation-delay:.15s}.optic-dots48912 i:nth-child(3){animation-delay:.3s}
+@keyframes opticSpin48912{to{transform:rotate(360deg)}}@keyframes opticDot48912{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.optic-orbit48912:before,.optic-dots48912 i{animation:none}}
+</style>
+<script id="v48912-analysis-animation-script">
+(()=>{const send=document.getElementById('send'),response=document.getElementById('response');if(!send||!response)return;const observer=new MutationObserver(()=>{const status=response.querySelector('.status');if(status&&/analizando/i.test(status.textContent||'')){status.className='optic-thinking48912';status.innerHTML='<div class="optic-orbit48912" aria-hidden="true"></div><div><strong>OPTIC IA · ANALIZANDO IMAGEN <span class="optic-dots48912"><i></i><i></i><i></i></span></strong><span>Reconociendo el contexto general y las estructuras visibles.</span></div>';status.setAttribute('role','status');status.setAttribute('aria-live','polite')}});observer.observe(response,{childList:true,subtree:true});})();
+</script>

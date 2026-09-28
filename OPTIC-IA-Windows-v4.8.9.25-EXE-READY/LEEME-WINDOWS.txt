@@ -1,0 +1,11 @@
+OPTIC IA para Windows · v4.8.9.24
+
+Esta edición reutiliza la interfaz y el Bridge funcionales de OPTIC IA y está preparada para ToupCamSDK en Windows x64.
+
+IMPORTANTE
+- El paquete NO incluye toupcam.dll porque debe corresponder a la versión de ToupCam/ToupLite compatible con la cámara del usuario.
+- Coloque toupcam.dll x64 junto a optic_bridge.py.
+- Cierre ToupLite/ToupView antes de iniciar OPTIC IA para evitar que la cámara quede ocupada.
+- Ejecute INICIAR-OPTIC-WINDOWS.bat.
+
+Para una distribución definitiva .EXE, primero valide en el Windows objetivo qué versión de ToupLite/ToupView abre la UCMOS. Después se incorpora ese toupcam.dll y se genera el instalador.
